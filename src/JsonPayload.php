@@ -24,7 +24,7 @@ class JsonPayload extends Payload implements ServerMiddlewareInterface
     private $depth = 512;
 
     /**
-     * @var options
+     * @var int
      */
     private $options = 0;
 
