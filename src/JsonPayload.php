@@ -1,0 +1,98 @@
+<?php
+
+namespace Middlewares;
+
+use Interop\Http\Middleware\ServerMiddlewareInterface;
+use Psr\Http\Message\StreamInterface;
+use DomainException;
+
+class JsonPayload extends Payload implements ServerMiddlewareInterface
+{
+    /**
+     * @var string
+     */
+    protected $mimetype = 'application/json';
+
+    /**
+     * @var bool
+     */
+    private $associative = true;
+
+    /**
+     * @var int
+     */
+    private $depth = 512;
+
+    /**
+     * @var options
+     */
+    private $options = 0;
+
+    /**
+     * Configure the returned objects must be converted into associative arrays.
+     *
+     * @see http://php.net/manual/en/function.json-decode.php
+     *
+     * @param bool $associative
+     *
+     * @return self
+     */
+    public function associative($associative = true)
+    {
+        $this->associative = $associative;
+
+        return $this;
+    }
+
+    /**
+     * Configure the recursion depth.
+     *
+     * @see http://php.net/manual/en/function.json-decode.php
+     *
+     * @param int $depth
+     *
+     * @return self
+     */
+    public function depth($depth)
+    {
+        $this->depth = (int) $depth;
+
+        return $this;
+    }
+
+    /**
+     * Configure the decode options.
+     *
+     * @see http://php.net/manual/en/function.json-decode.php
+     *
+     * @param int $options
+     *
+     * @return self
+     */
+    public function options($options)
+    {
+        $this->options = (int) $options;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function parse(StreamInterface $stream)
+    {
+        $json = trim((string) $stream);
+
+        if ($json === '') {
+            return [];
+        }
+
+        $data = json_decode($json, $this->associative, $this->depth, $this->options);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new DomainException(json_last_error_msg());
+        }
+
+        return $data ?: [];
+    }
+}
