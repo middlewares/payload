@@ -5,10 +5,11 @@ namespace Middlewares\Tests;
 use Middlewares\JsonPayload;
 use Middlewares\CsvPayload;
 use Middlewares\UrlEncodePayload;
+use Middlewares\Utils\Dispatcher;
+use Middlewares\Utils\CallableMiddleware;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
-use mindplay\middleman\Dispatcher;
 
 class JsonPayloadTest extends \PHPUnit_Framework_TestCase
 {
@@ -40,13 +41,13 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
             new JsonPayload(),
             new CsvPayload(),
             new UrlEncodePayload(),
-            function ($request) use ($result) {
+            new CallableMiddleware(function ($request) use ($result) {
                 $this->assertEquals($result, $request->getParsedBody());
                 $response = new Response();
                 $response->getBody()->write('Ok');
 
                 return $response;
-            },
+            }),
         ]))->dispatch($request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
