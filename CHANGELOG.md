@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 * New option `methods()` to configure the allowed methods
+* New option `override()` to configure if the previous parsed body must be overrided
 
 ## 0.1.0 - 2016-10-04
 

@@ -47,6 +47,10 @@ To pass the bitmask of json_decode options.
 
 To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
 
+#### `override($override = true)`
+
+To override the previous parsed body if exists (`false` by default)
+
 ```php
 $dispatcher = new Dispatcher([
 	(new Middlewares\JsonPayload())
@@ -65,6 +69,10 @@ Parses the url-encoded payload of the request. There's no options.
 
 To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
 
+#### `override($override = true)`
+
+To override the previous parsed body if exists (`false` by default)
+
 ```php
 $dispatcher = new Dispatcher([
     new Middlewares\UrlEncodePayload()
@@ -80,6 +88,10 @@ Parses the csv payload of the request. There's no options.
 #### `methods(array $methods)`
 
 To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
+
+#### `override($override = true)`
+
+To override the previous parsed body if exists (`false` by default)
 
 ```php
 $dispatcher = new Dispatcher([

@@ -16,12 +16,17 @@ abstract class Payload
     protected $mimetype;
 
     /**
+     * @var bool
+     */
+    protected $override = false;
+
+    /**
      * @var string[]
      */
     protected $methods = ['POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'LOCK', 'UNLOCK'];
 
     /**
-     * Configure the methods allowed
+     * Configure the methods allowed.
      *
      * @param string[] $methods
      *
@@ -30,6 +35,20 @@ abstract class Payload
     public function methods(array $methods)
     {
         $this->methods = $methods;
+
+        return $this;
+    }
+
+    /**
+     * Configure if the parsed body overrides the previous value.
+     *
+     * @param bool $override
+     *
+     * @return self
+     */
+    public function override($override = true)
+    {
+        $this->override = (bool) $override;
 
         return $this;
     }
@@ -44,7 +63,7 @@ abstract class Payload
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        if (!$request->getParsedBody()
+        if ((!$request->getParsedBody() || $this->override)
          && in_array($request->getMethod(), $this->methods, true)
          && stripos($request->getHeaderLine('Content-Type'), $this->mimetype) === 0) {
             try {

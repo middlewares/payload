@@ -80,17 +80,17 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
                 ['POST'],
                 'POST',
                 '{"bar":"foo"}',
-                ['bar' => 'foo']
-            ],[
+                ['bar' => 'foo'],
+            ], [
                 ['PUT'],
                 'POST',
                 '{"bar":"foo"}',
-                null
-            ],[
+                null,
+            ], [
                 ['GET'],
                 'GET',
                 '{"bar":"foo"}',
-                ['bar' => 'foo']
+                ['bar' => 'foo'],
             ],
         ];
     }
@@ -117,6 +117,45 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
 
                 return $response;
             }),
+        ]))->dispatch($request);
+
+        $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('Ok', (string) $response->getBody());
+    }
+
+    public function testOverride()
+    {
+        $stream = new Stream(fopen('php://temp', 'r+'));
+        $stream->write('{"bar":"foo"}');
+
+        $request = (new ServerRequest())
+            ->withHeader('Content-Type', 'application/json')
+            ->withMethod('POST')
+            ->withBody($stream);
+
+        $response = (new Dispatcher([
+            new JsonPayload(),
+            new CallableMiddleware(function ($request, $next) {
+                $this->assertEquals(['bar' => 'foo'], $request->getParsedBody());
+
+                return $next->process($request->withParsedBody(['other' => 'body']));
+            }),
+            new JsonPayload(),
+            new CallableMiddleware(function ($request, $next) {
+                $this->assertEquals(['other' => 'body'], $request->getParsedBody());
+
+                return $next->process($request);
+            }),
+            (new JsonPayload())->override(),
+            new CallableMiddleware(function ($request, $next) {
+                $this->assertEquals(['bar' => 'foo'], $request->getParsedBody());
+                $response = new Response();
+                $response->getBody()->write('Ok');
+
+                return $response;
+            }),
+
         ]))->dispatch($request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
