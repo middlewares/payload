@@ -41,7 +41,11 @@ To configure the recursion depth.
 
 #### `options(int $options)`
 
-To configure the recursion depth.
+To pass the bitmask of json_decode options.
+
+#### `methods(array $methods)`
+
+To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
 
 ```php
 $dispatcher = new Dispatcher([
@@ -57,6 +61,10 @@ $response = $dispatcher->dispatch(new ServerRequest());
 
 Parses the url-encoded payload of the request. There's no options.
 
+#### `methods(array $methods)`
+
+To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
+
 ```php
 $dispatcher = new Dispatcher([
     new Middlewares\UrlEncodePayload()
@@ -68,6 +76,10 @@ $response = $dispatcher->dispatch(new ServerRequest());
 ## CsvPayload
 
 Parses the csv payload of the request. There's no options.
+
+#### `methods(array $methods)`
+
+To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
 
 ```php
 $dispatcher = new Dispatcher([

@@ -72,4 +72,55 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals(400, $response->getStatusCode());
     }
+
+    public function methodProvider()
+    {
+        return [
+            [
+                ['POST'],
+                'POST',
+                '{"bar":"foo"}',
+                ['bar' => 'foo']
+            ],[
+                ['PUT'],
+                'POST',
+                '{"bar":"foo"}',
+                null
+            ],[
+                ['GET'],
+                'GET',
+                '{"bar":"foo"}',
+                ['bar' => 'foo']
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider methodProvider
+     */
+    public function testMethods($methods, $method, $body, $result)
+    {
+        $stream = new Stream(fopen('php://temp', 'r+'));
+        $stream->write($body);
+
+        $request = (new ServerRequest())
+            ->withHeader('Content-Type', 'application/json')
+            ->withMethod($method)
+            ->withBody($stream);
+
+        $response = (new Dispatcher([
+            (new JsonPayload())->methods($methods),
+            new CallableMiddleware(function ($request) use ($result) {
+                $this->assertEquals($result, $request->getParsedBody());
+                $response = new Response();
+                $response->getBody()->write('Ok');
+
+                return $response;
+            }),
+        ]))->dispatch($request);
+
+        $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('Ok', (string) $response->getBody());
+    }
 }

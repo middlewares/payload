@@ -16,6 +16,25 @@ abstract class Payload
     protected $mimetype;
 
     /**
+     * @var string[]
+     */
+    protected $methods = ['POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'LOCK', 'UNLOCK'];
+
+    /**
+     * Configure the methods allowed
+     *
+     * @param string[] $methods
+     *
+     * @return self
+     */
+    public function methods(array $methods)
+    {
+        $this->methods = $methods;
+
+        return $this;
+    }
+
+    /**
      * Process a server request and return a response.
      *
      * @param ServerRequestInterface $request
@@ -26,7 +45,7 @@ abstract class Payload
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         if (!$request->getParsedBody()
-         && in_array($request->getMethod(), ['POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'LOCK', 'UNLOCK'], true)
+         && in_array($request->getMethod(), $this->methods, true)
          && stripos($request->getHeaderLine('Content-Type'), $this->mimetype) === 0) {
             try {
                 $request = $request->withParsedBody($this->parse($request->getBody()));
