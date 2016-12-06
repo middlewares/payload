@@ -6,10 +6,7 @@ use Middlewares\JsonPayload;
 use Middlewares\CsvPayload;
 use Middlewares\UrlEncodePayload;
 use Middlewares\Utils\Dispatcher;
-use Middlewares\Utils\CallableMiddleware;
-use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\Stream;
+use Middlewares\Utils\Factory;
 
 class JsonPayloadTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,25 +26,19 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
      */
     public function testPayload($header, $body, $result)
     {
-        $stream = new Stream(fopen('php://temp', 'r+'));
-        $stream->write($body);
+        $request = Factory::createServerRequest([], 'POST')
+            ->withHeader('Content-Type', $header);
 
-        $request = (new ServerRequest())
-            ->withHeader('Content-Type', $header)
-            ->withMethod('POST')
-            ->withBody($stream);
+        $request->getBody()->write($body);
 
         $response = (new Dispatcher([
             new JsonPayload(),
             new CsvPayload(),
             new UrlEncodePayload(),
-            new CallableMiddleware(function ($request) use ($result) {
+            function ($request) use ($result) {
                 $this->assertEquals($result, $request->getParsedBody());
-                $response = new Response();
-                $response->getBody()->write('Ok');
-
-                return $response;
-            }),
+                echo 'Ok';
+            },
         ]))->dispatch($request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
@@ -57,13 +48,10 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
 
     public function testError()
     {
-        $stream = new Stream(fopen('php://temp', 'r+'));
-        $stream->write('{invalid:"json"}');
+        $request = Factory::createServerRequest([], 'POST')
+            ->withHeader('Content-Type', 'application/json');
 
-        $request = (new ServerRequest())
-            ->withHeader('Content-Type', 'application/json')
-            ->withMethod('POST')
-            ->withBody($stream);
+        $request->getBody()->write('{invalid:"json"}');
 
         $response = (new Dispatcher([
             new JsonPayload(),
@@ -100,23 +88,18 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
      */
     public function testMethods($methods, $method, $body, $result)
     {
-        $stream = new Stream(fopen('php://temp', 'r+'));
-        $stream->write($body);
+        $request = Factory::createServerRequest([], $method)
+            ->withHeader('Content-Type', 'application/json');
 
-        $request = (new ServerRequest())
-            ->withHeader('Content-Type', 'application/json')
-            ->withMethod($method)
-            ->withBody($stream);
+        $request->getBody()->write($body);
 
         $response = (new Dispatcher([
             (new JsonPayload())->methods($methods),
-            new CallableMiddleware(function ($request) use ($result) {
+            function ($request) use ($result) {
                 $this->assertEquals($result, $request->getParsedBody());
-                $response = new Response();
-                $response->getBody()->write('Ok');
 
-                return $response;
-            }),
+                echo 'Ok';
+            },
         ]))->dispatch($request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
@@ -126,36 +109,30 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
 
     public function testOverride()
     {
-        $stream = new Stream(fopen('php://temp', 'r+'));
-        $stream->write('{"bar":"foo"}');
+        $request = Factory::createServerRequest([], 'POST')
+            ->withHeader('Content-Type', 'application/json');
 
-        $request = (new ServerRequest())
-            ->withHeader('Content-Type', 'application/json')
-            ->withMethod('POST')
-            ->withBody($stream);
+        $request->getBody()->write('{"bar":"foo"}');
 
         $response = (new Dispatcher([
             new JsonPayload(),
-            new CallableMiddleware(function ($request, $next) {
+            function ($request, $next) {
                 $this->assertEquals(['bar' => 'foo'], $request->getParsedBody());
 
                 return $next->process($request->withParsedBody(['other' => 'body']));
-            }),
+            },
             new JsonPayload(),
-            new CallableMiddleware(function ($request, $next) {
+            function ($request, $next) {
                 $this->assertEquals(['other' => 'body'], $request->getParsedBody());
 
                 return $next->process($request);
-            }),
+            },
             (new JsonPayload())->override(),
-            new CallableMiddleware(function ($request, $next) {
+            function ($request, $next) {
                 $this->assertEquals(['bar' => 'foo'], $request->getParsedBody());
-                $response = new Response();
-                $response->getBody()->write('Ok');
 
-                return $response;
-            }),
-
+                echo 'Ok';
+            },
         ]))->dispatch($request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
