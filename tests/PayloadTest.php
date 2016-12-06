@@ -31,7 +31,7 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
 
         $request->getBody()->write($body);
 
-        $response = (new Dispatcher([
+        $response = Dispatcher::run([
             new JsonPayload(),
             new CsvPayload(),
             new UrlEncodePayload(),
@@ -39,7 +39,7 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
                 $this->assertEquals($result, $request->getParsedBody());
                 echo 'Ok';
             },
-        ]))->dispatch($request);
+        ], $request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals(200, $response->getStatusCode());
@@ -53,9 +53,9 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
 
         $request->getBody()->write('{invalid:"json"}');
 
-        $response = (new Dispatcher([
+        $response = Dispatcher::run([
             new JsonPayload(),
-        ]))->dispatch($request);
+        ], $request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals(400, $response->getStatusCode());
@@ -93,14 +93,14 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
 
         $request->getBody()->write($body);
 
-        $response = (new Dispatcher([
+        $response = Dispatcher::run([
             (new JsonPayload())->methods($methods),
             function ($request) use ($result) {
                 $this->assertEquals($result, $request->getParsedBody());
 
                 echo 'Ok';
             },
-        ]))->dispatch($request);
+        ], $request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals(200, $response->getStatusCode());
@@ -114,7 +114,7 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
 
         $request->getBody()->write('{"bar":"foo"}');
 
-        $response = (new Dispatcher([
+        $response = Dispatcher::run([
             new JsonPayload(),
             function ($request, $next) {
                 $this->assertEquals(['bar' => 'foo'], $request->getParsedBody());
@@ -133,7 +133,7 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
 
                 echo 'Ok';
             },
-        ]))->dispatch($request);
+        ], $request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals(200, $response->getStatusCode());
