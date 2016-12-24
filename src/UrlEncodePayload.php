@@ -2,10 +2,10 @@
 
 namespace Middlewares;
 
-use Interop\Http\Middleware\ServerMiddlewareInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\StreamInterface;
 
-class UrlEncodePayload extends Payload implements ServerMiddlewareInterface
+class UrlEncodePayload extends Payload implements MiddlewareInterface
 {
     /**
      * @var string

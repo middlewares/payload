@@ -2,11 +2,11 @@
 
 namespace Middlewares;
 
-use Interop\Http\Middleware\ServerMiddlewareInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\StreamInterface;
 use DomainException;
 
-class JsonPayload extends Payload implements ServerMiddlewareInterface
+class JsonPayload extends Payload implements MiddlewareInterface
 {
     /**
      * @var string
