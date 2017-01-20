@@ -1,8 +1,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/) 
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## Next
+
+* Improve CsvPayload
+
+    - New option `setCsvControl`
+    - StreamInterface fixed left undetached
+    - New option `associative` to enable returning an array or a SplTempFileObject.
 
 ## 0.3.0 - 2016-12-26
 

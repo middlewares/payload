@@ -2,11 +2,14 @@
 
 namespace Middlewares\Tests;
 
+use InvalidArgumentException;
 use Middlewares\JsonPayload;
 use Middlewares\CsvPayload;
 use Middlewares\UrlEncodePayload;
 use Middlewares\Utils\Dispatcher;
 use Middlewares\Utils\Factory;
+use Psr\Http\Message\ResponseInterface;
+use SplTempFileObject;
 
 class JsonPayloadTest extends \PHPUnit_Framework_TestCase
 {
@@ -41,7 +44,7 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
             },
         ], $request);
 
-        $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('Ok', (string) $response->getBody());
     }
@@ -102,7 +105,7 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
             },
         ], $request);
 
-        $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('Ok', (string) $response->getBody());
     }
@@ -136,6 +139,56 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
         ], $request);
 
         $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('Ok', (string) $response->getBody());
+    }
+
+    public function testCsvPayloadSetters()
+    {
+        $csv_payload = (new CsvPayload())->setCsvControl(';');
+
+        $request = Factory::createServerRequest([], 'POST')
+            ->withHeader('Content-Type', 'text/csv');
+
+        $request->getBody()->write("one;two\nthree;four");
+
+        $response = Dispatcher::run([
+            $csv_payload,
+            function ($request) {
+                $this->assertEquals([['one', 'two'], ['three', 'four']], $request->getParsedBody());
+                echo 'Ok';
+            },
+        ], $request);
+
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('Ok', (string) $response->getBody());
+    }
+
+    public function testCsvPayloadSettersThrowsException()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        (new CsvPayload())->setCsvControl('yo');
+    }
+
+    public function testParseBodyAsSplFileObject()
+    {
+        $csv_payload = (new CsvPayload())->associative(false);
+
+        $request = Factory::createServerRequest([], 'POST')
+            ->withHeader('Content-Type', 'text/csv');
+
+        $request->getBody()->write("one,two\nthree,four");
+
+        $response = Dispatcher::run([
+            $csv_payload,
+            function ($request) {
+                $this->assertInstanceOf(SplTempFileObject::class, $request->getParsedBody());
+                echo 'Ok';
+            },
+        ], $request);
+
+        $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('Ok', (string) $response->getBody());
     }

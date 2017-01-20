@@ -83,7 +83,15 @@ $response = $dispatcher->dispatch(new ServerRequest());
 
 ## CsvPayload
 
-Parses the csv payload of the request. There's no options.
+Parses the csv payload of the request. Contains the following options to configure the [SplTempFileObject](http://php.net/SplTempFileObject) object:
+
+#### `setCsvControl($delimiter = ",", $enclosure = "\"", $escape = "\\")`
+
+To configure the Csv control characters. If the submitted character is invalid an `InvalidArgumentException` exception is thrown.
+
+#### `associative(bool $associative)`
+
+Enabled by default, convert the CSV into a sequential array of all CSV lines. Otherwise, return the CSV file as a `SplTempFileObject`.
 
 #### `methods(array $methods)`
 

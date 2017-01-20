@@ -29,15 +29,14 @@ class JsonPayload extends Payload implements MiddlewareInterface
     private $options = 0;
 
     /**
-     * Configure the returned objects must be converted into associative arrays.
+     * Configure the returned object to be converted into a sequential array of all CSV lines
+     * or a SplTempFileObject
      *
-     * @see http://php.net/manual/en/function.json-decode.php
-     *
-     * @param bool $associative
+     * @param bool $assoc
      *
      * @return self
      */
-    public function associative($associative = true)
+    public function associative($assoc = true)
     {
         $this->associative = $associative;
 
