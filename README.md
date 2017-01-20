@@ -103,7 +103,9 @@ To override the previous parsed body if exists (`false` by default)
 
 ```php
 $dispatcher = new Dispatcher([
-    new Middlewares\CsvPayload()
+    (new Middlewares\CsvPayload())
+    	->setCsvControl(";")
+    	->associative(false)
 ]);
 
 $response = $dispatcher->dispatch(new ServerRequest());
