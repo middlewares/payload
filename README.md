@@ -83,7 +83,19 @@ $response = $dispatcher->dispatch(new ServerRequest());
 
 ## CsvPayload
 
-Parses the csv payload of the request. There's no options.
+Parses the csv payload of the request. Contains the following options to configure the [SplTempFileObject](http://php.net/SplTempFileObject) object:
+
+#### `delimiter($delimiter)`
+
+To configure the Csv delimiter control character (one character only). If the submitted character is invalid an `InvalidArgumentException` exception is thrown.
+
+#### `enclosure($enclosure)`
+
+To configure the Csv enclosure control character (one character only). If the submitted character is invalid an `InvalidArgumentException` exception is thrown.
+
+#### `escape($escape)`
+
+To configure the Csv escape control character (one character only). If the submitted character is invalid an `InvalidArgumentException` exception is thrown.
 
 #### `methods(array $methods)`
 
@@ -95,7 +107,10 @@ To override the previous parsed body if exists (`false` by default)
 
 ```php
 $dispatcher = new Dispatcher([
-    new Middlewares\CsvPayload()
+    (new Middlewares\CsvPayload())
+    	->delimiter(";")
+    	->enclosure("'")
+    	->escape("\\")
 ]);
 
 $response = $dispatcher->dispatch(new ServerRequest());
