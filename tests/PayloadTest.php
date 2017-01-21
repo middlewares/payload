@@ -143,9 +143,13 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testCsvPayloadSetters()
+    public function testCsvPayloadOptions()
     {
-        $csv_payload = (new CsvPayload())->setCsvControl(';');
+        $csv_payload = (new CsvPayload())
+            ->delimiter(';')
+            ->enclosure('"')
+            ->escape('\\')
+        ;
 
         $request = Factory::createServerRequest([], 'POST')
             ->withHeader('Content-Type', 'text/csv');
@@ -165,31 +169,22 @@ class JsonPayloadTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testCsvPayloadSettersThrowsException()
+    /**
+     * @dataProvider invalidCsvControlProvider
+     */
+    public function testCsvPayloadSettersThrowsException($char)
     {
         $this->expectException(InvalidArgumentException::class);
-        (new CsvPayload())->setCsvControl('yo');
+        (new CsvPayload())->delimiter($char);
     }
 
-    public function testParseBodyAsSplFileObject()
+    public function invalidCsvControlProvider()
     {
-        $csv_payload = (new CsvPayload())->associative(false);
-
-        $request = Factory::createServerRequest([], 'POST')
-            ->withHeader('Content-Type', 'text/csv');
-
-        $request->getBody()->write("one,two\nthree,four");
-
-        $response = Dispatcher::run([
-            $csv_payload,
-            function ($request) {
-                $this->assertInstanceOf(SplTempFileObject::class, $request->getParsedBody());
-                echo 'Ok';
-            },
-        ], $request);
-
-        $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('Ok', (string) $response->getBody());
+        return [
+            'too long' => ['coucou'],
+            'too short' => [''],
+            'unicode char' => ['💩'],
+            'unicode char PHP7 notation' => ["\u{0001F4A9}"],
+        ];
     }
 }

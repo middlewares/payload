@@ -36,43 +36,42 @@ class CsvPayload extends Payload implements MiddlewareInterface
     protected $escape = "\\";
 
     /**
-     * @var bool
-     */
-    private $assoc = true;
-
-    /**
-     * Configure the returned object to be converted into
-     *  - a sequential array of all CSV lines
-     *  - or a SplTempFileObject
+     * Set Csv Control delimiter character
      *
-     * @param bool $assoc
+     * @param string $enclosure
      *
      * @return self
      */
-    public function associative($assoc = true)
+    public function delimiter($delimiter)
     {
-        $this->assoc = (bool) $assoc;
+        $this->delimiter = $this->filterControl($delimiter, 'delimiter');
 
         return $this;
     }
 
     /**
-     * Set Csv Control characters
+     * Set Csv Control enclosure character
      *
-     * Mimic SplFileObject::setCsvControl
-     *
-     * @see http://be2.php.net/manual/en/splfileobject.setcsvcontrol.php
-     *
-     * @param string $delimiter
      * @param string $enclosure
-     * @param string $escape
      *
      * @return self
      */
-    public function setCsvControl($delimiter = ",", $enclosure = "\"", $escape = "\\")
+    public function enclosure($enclosure)
     {
-        $this->delimiter = $this->filterControl($delimiter, 'delimiter');
         $this->enclosure = $this->filterControl($enclosure, 'enclosure');
+
+        return $this;
+    }
+
+    /**
+     * Set Csv Control escape character
+     *
+     * @param string $enclosure
+     *
+     * @return self
+     */
+    public function escape($escape)
+    {
         $this->escape = $this->filterControl($escape, 'escape');
 
         return $this;
@@ -81,10 +80,10 @@ class CsvPayload extends Payload implements MiddlewareInterface
     /**
      * Filter Csv control character
      *
-     * @param  string $char Csv control character
-     * @param  string $type Csv control character type
+     * @param string $char Csv control character
+     * @param string $type Csv control character type
      *
-     * @throws  InvalidArgumentException If the Csv control character is not one character only.
+     * @throws InvalidArgumentException If the Csv control character is not one character only.
      *
      * @return string
      */
@@ -107,10 +106,6 @@ class CsvPayload extends Payload implements MiddlewareInterface
         $csv->setFlags(SplTempFileObject::READ_CSV);
         $csv->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
 
-        if ($this->assoc) {
-            return iterator_to_array($csv);
-        }
-
-        return $csv;
+        return iterator_to_array($csv);
     }
 }

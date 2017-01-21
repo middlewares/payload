@@ -32,11 +32,11 @@ class JsonPayload extends Payload implements MiddlewareInterface
      * Configure the returned object to be converted into a sequential array of all CSV lines
      * or a SplTempFileObject
      *
-     * @param bool $assoc
+     * @param bool $associative
      *
      * @return self
      */
-    public function associative($assoc = true)
+    public function associative($associative = true)
     {
         $this->associative = $associative;
 

@@ -8,9 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * Improve CsvPayload
 
-    - New option `setCsvControl`
-    - StreamInterface fixed left undetached
-    - New option `associative` to enable returning an array or a SplTempFileObject.
+    - New option `delimiter()` to configure the CSV delimiter character
+    - New option `enclosure()` to configure the CSV enclosure character
+    - New option `escape()` to configure the CSV escape character
+    - `StreamInterface` fixed left undetached
 
 ## 0.3.0 - 2016-12-26
 
