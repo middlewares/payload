@@ -38,7 +38,7 @@ class CsvPayload extends Payload implements MiddlewareInterface
     /**
      * Set Csv Control delimiter character
      *
-     * @param string $enclosure
+     * @param string $delimiter
      *
      * @return self
      */
@@ -66,7 +66,7 @@ class CsvPayload extends Payload implements MiddlewareInterface
     /**
      * Set Csv Control escape character
      *
-     * @param string $enclosure
+     * @param string $escape
      *
      * @return self
      */
