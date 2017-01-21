@@ -10,7 +10,7 @@ class UrlEncodePayload extends Payload implements MiddlewareInterface
     /**
      * @var string
      */
-    protected $mimetype = 'application/x-www-form-urlencoded';
+    protected $contentType = 'application/x-www-form-urlencoded';
 
     /**
      * {@inheritdoc}

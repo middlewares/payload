@@ -11,7 +11,7 @@ class JsonPayload extends Payload implements MiddlewareInterface
     /**
      * @var string
      */
-    protected $mimetype = 'application/json';
+    protected $contentType = 'application/json';
 
     /**
      * @var bool

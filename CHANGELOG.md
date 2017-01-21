@@ -6,12 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Next
 
-* Improve CsvPayload
-
+* Added
+  * New option `contentType()` to configure the `Content-Type` response header
+  * Improve CsvPayload
     - New option `delimiter()` to configure the CSV delimiter character
     - New option `enclosure()` to configure the CSV enclosure character
     - New option `escape()` to configure the CSV escape character
-    - `StreamInterface` fixed left undetached
+
+* Fixed
+  * CsvPayload: `StreamInterface` fixed left undetached
+
 
 ## 0.3.0 - 2016-12-26
 

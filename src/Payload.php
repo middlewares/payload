@@ -13,7 +13,7 @@ abstract class Payload
     /**
      * @var string
      */
-    protected $mimetype;
+    protected $contentType;
 
     /**
      * @var bool
@@ -24,6 +24,20 @@ abstract class Payload
      * @var string[]
      */
     protected $methods = ['POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'LOCK', 'UNLOCK'];
+
+    /**
+     * Configure the Content-Type.
+     *
+     * @param string $contentType
+     *
+     * @return self
+     */
+    public function contentType($contentType)
+    {
+        $this->contentType = $contentType;
+
+        return $this;
+    }
 
     /**
      * Configure the methods allowed.
@@ -65,7 +79,7 @@ abstract class Payload
     {
         if ((!$request->getParsedBody() || $this->override)
          && in_array($request->getMethod(), $this->methods, true)
-         && stripos($request->getHeaderLine('Content-Type'), $this->mimetype) === 0) {
+         && stripos($request->getHeaderLine('Content-Type'), $this->contentType) === 0) {
             try {
                 $request = $request->withParsedBody($this->parse($request->getBody()));
             } catch (Exception $exception) {

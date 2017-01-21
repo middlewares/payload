@@ -12,7 +12,7 @@ class CsvPayload extends Payload implements MiddlewareInterface
     /**
      * @var string
      */
-    protected $mimetype = 'text/csv';
+    protected $contentType = 'text/csv';
 
     /**
      * The field delimiter (one character only).
