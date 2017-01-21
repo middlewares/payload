@@ -44,7 +44,7 @@ class CsvPayload extends Payload implements MiddlewareInterface
      */
     public function delimiter($delimiter)
     {
-        $this->delimiter = $this->filterControl($delimiter, 'delimiter');
+        $this->delimiter = self::filterControl($delimiter, 'delimiter');
 
         return $this;
     }
@@ -58,7 +58,7 @@ class CsvPayload extends Payload implements MiddlewareInterface
      */
     public function enclosure($enclosure)
     {
-        $this->enclosure = $this->filterControl($enclosure, 'enclosure');
+        $this->enclosure = self::filterControl($enclosure, 'enclosure');
 
         return $this;
     }
@@ -72,7 +72,7 @@ class CsvPayload extends Payload implements MiddlewareInterface
      */
     public function escape($escape)
     {
-        $this->escape = $this->filterControl($escape, 'escape');
+        $this->escape = self::filterControl($escape, 'escape');
 
         return $this;
     }
@@ -87,7 +87,7 @@ class CsvPayload extends Payload implements MiddlewareInterface
      *
      * @return string
      */
-    protected function filterControl($char, $type)
+    private static function filterControl($char, $type)
     {
         if (1 == strlen($char)) {
             return $char;
