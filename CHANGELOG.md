@@ -4,10 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Next
+## 0.4.0 - 2017-02-05
 
 * Added
-  * New option `contentType()` to configure the `Content-Type` response header
+  * New option `contentType()` to configure the `Content-Type` request header
   * Improve CsvPayload
     - New option `delimiter()` to configure the CSV delimiter character
     - New option `enclosure()` to configure the CSV enclosure character
@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * Fixed
   * CsvPayload: `StreamInterface` fixed left undetached
-
 
 ## 0.3.0 - 2016-12-26
 
