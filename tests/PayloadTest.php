@@ -2,15 +2,14 @@
 
 namespace Middlewares\Tests;
 
-use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
-use Middlewares\JsonPayload;
 use Middlewares\CsvPayload;
+use Middlewares\JsonPayload;
 use Middlewares\UrlEncodePayload;
 use Middlewares\Utils\Dispatcher;
 use Middlewares\Utils\Factory;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use SplTempFileObject;
 
 class JsonPayloadTest extends TestCase
 {
@@ -27,6 +26,9 @@ class JsonPayloadTest extends TestCase
 
     /**
      * @dataProvider payloadProvider
+     * @param mixed $header
+     * @param mixed $body
+     * @param mixed $result
      */
     public function testPayload($header, $body, $result)
     {
@@ -89,6 +91,10 @@ class JsonPayloadTest extends TestCase
 
     /**
      * @dataProvider methodProvider
+     * @param mixed $methods
+     * @param mixed $method
+     * @param mixed $body
+     * @param mixed $result
      */
     public function testMethods($methods, $method, $body, $result)
     {
@@ -149,8 +155,7 @@ class JsonPayloadTest extends TestCase
         $csv_payload = (new CsvPayload())
             ->delimiter(';')
             ->enclosure('"')
-            ->escape('\\')
-        ;
+            ->escape('\\');
 
         $request = Factory::createServerRequest([], 'POST')
             ->withHeader('Content-Type', 'text/csv');
@@ -172,6 +177,7 @@ class JsonPayloadTest extends TestCase
 
     /**
      * @dataProvider invalidCsvControlProvider
+     * @param mixed $char
      */
     public function testCsvPayloadSettersThrowsException($char)
     {

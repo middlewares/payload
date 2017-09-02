@@ -19,21 +19,21 @@ class CsvPayload extends Payload implements MiddlewareInterface
      *
      * @var string
      */
-    protected $delimiter = ",";
+    protected $delimiter = ',';
 
     /**
      * The field enclosure (one character only).
      *
      * @var string
      */
-    protected $enclosure = "\"";
+    protected $enclosure = '"';
 
     /**
      * The field escape (one character only).
      *
      * @var string
      */
-    protected $escape = "\\";
+    protected $escape = '\\';
 
     /**
      * Set Csv Control delimiter character
