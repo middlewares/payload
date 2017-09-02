@@ -2,6 +2,7 @@
 
 namespace Middlewares\Tests;
 
+use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use Middlewares\JsonPayload;
 use Middlewares\CsvPayload;
@@ -11,7 +12,7 @@ use Middlewares\Utils\Factory;
 use Psr\Http\Message\ResponseInterface;
 use SplTempFileObject;
 
-class JsonPayloadTest extends \PHPUnit_Framework_TestCase
+class JsonPayloadTest extends TestCase
 {
     public function payloadProvider()
     {
