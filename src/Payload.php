@@ -11,7 +11,7 @@ use Psr\Http\Message\StreamInterface;
 abstract class Payload
 {
     /**
-     * @var string
+     * @var array
      */
     protected $contentType;
 
@@ -28,11 +28,11 @@ abstract class Payload
     /**
      * Configure the Content-Type.
      *
-     * @param string $contentType
+     * @param array $contentType
      *
      * @return self
      */
-    public function contentType($contentType)
+    public function contentType(array $contentType)
     {
         $this->contentType = $contentType;
 
@@ -77,9 +77,7 @@ abstract class Payload
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        if ((!$request->getParsedBody() || $this->override)
-         && in_array($request->getMethod(), $this->methods, true)
-         && stripos($request->getHeaderLine('Content-Type'), $this->contentType) === 0) {
+        if ($this->checkRequest($request)) {
             try {
                 $request = $request->withParsedBody($this->parse($request->getBody()));
             } catch (Exception $exception) {
@@ -98,4 +96,32 @@ abstract class Payload
      * @return array
      */
     abstract protected function parse(StreamInterface $stream);
+
+    /**
+     * Check whether the request payload need to be processed
+     *
+     * @param  ServerRequestInterface $request
+     *
+     * @return bool
+     */
+    private function checkRequest(ServerRequestInterface $request)
+    {
+        if ($request->getParsedBody() && !$this->override) {
+            return false;
+        }
+
+        if (!in_array($request->getMethod(), $this->methods, true)) {
+            return false;
+        }
+
+        $contentType = $request->getHeaderLine('Content-Type');
+
+        foreach ($this->contentType as $allowedType) {
+            if (stripos($contentType, $allowedType) === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

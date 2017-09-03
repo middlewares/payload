@@ -47,9 +47,9 @@ To pass the bitmask of json_decode options.
 
 To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
 
-#### `contentType(string $contentType)`
+#### `contentType(array $contentType)`
 
-To configure the Content-Type header used in the request. By default is `application/json`
+To configure all Content-Type headers allowed in the request. By default is `application/json`
 
 #### `override($override = true)`
 
@@ -73,9 +73,9 @@ Parses the url-encoded payload of the request. There's no options.
 
 To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
 
-#### `contentType(string $contentType)`
+#### `contentType(array $contentType)`
 
-To configure the Content-Type header used in the request. By default is `application/x-www-form-urlencoded`
+To configure all Content-Type headers used in the request. By default is `application/x-www-form-urlencoded`
 
 #### `override($override = true)`
 
@@ -109,9 +109,9 @@ To configure the Csv escape control character (one character only). If the submi
 
 To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
 
-#### `contentType(string $contentType)`
+#### `contentType(array $contentType)`
 
-To configure the Content-Type header used in the request. By default is `text/csv`
+To configure all Content-Type headers used in the request. By default is `text/csv`
 
 #### `override($override = true)`
 

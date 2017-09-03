@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+* The `contentType()` argument is an array instead a string, allowing to assign multiple values
 * Append `.dist` suffix to phpcs.xml and phpunit.xml files
 * Changed the configuration of phpcs and php_cs
 * Upgraded phpunit to the latest version and improved its config file

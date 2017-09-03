@@ -9,9 +9,9 @@ use Psr\Http\Message\StreamInterface;
 class JsonPayload extends Payload implements MiddlewareInterface
 {
     /**
-     * @var string
+     * @var array
      */
-    protected $contentType = 'application/json';
+    protected $contentType = ['application/json'];
 
     /**
      * @var bool

@@ -47,7 +47,6 @@ class JsonPayloadTest extends TestCase
             },
         ], $request);
 
-        $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('Ok', (string) $response->getBody());
     }
@@ -63,7 +62,6 @@ class JsonPayloadTest extends TestCase
             new JsonPayload(),
         ], $request);
 
-        $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
         $this->assertEquals(400, $response->getStatusCode());
     }
 
@@ -112,7 +110,6 @@ class JsonPayloadTest extends TestCase
             },
         ], $request);
 
-        $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('Ok', (string) $response->getBody());
     }
@@ -145,7 +142,26 @@ class JsonPayloadTest extends TestCase
             },
         ], $request);
 
-        $this->assertInstanceOf('Psr\\Http\\Message\\ResponseInterface', $response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('Ok', (string) $response->getBody());
+    }
+
+    public function testContentType()
+    {
+        $request = Factory::createServerRequest([], 'POST')
+            ->withHeader('Content-Type', 'bar/foo; charset=utf8');
+
+        $request->getBody()->write('{"bar":"foo"}');
+
+        $response = Dispatcher::run([
+            (new JsonPayload())->contentType(['application/json', 'bar/foo']),
+            function ($request, $next) {
+                $this->assertEquals(['bar' => 'foo'], $request->getParsedBody());
+
+                echo 'Ok';
+            },
+        ], $request);
+
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('Ok', (string) $response->getBody());
     }
@@ -170,7 +186,6 @@ class JsonPayloadTest extends TestCase
             },
         ], $request);
 
-        $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('Ok', (string) $response->getBody());
     }

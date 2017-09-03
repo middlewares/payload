@@ -8,9 +8,9 @@ use Psr\Http\Message\StreamInterface;
 class UrlEncodePayload extends Payload implements MiddlewareInterface
 {
     /**
-     * @var string
+     * @var array
      */
-    protected $contentType = 'application/x-www-form-urlencoded';
+    protected $contentType = ['application/x-www-form-urlencoded'];
 
     /**
      * {@inheritdoc}

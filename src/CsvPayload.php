@@ -10,9 +10,9 @@ use SplTempFileObject;
 class CsvPayload extends Payload implements MiddlewareInterface
 {
     /**
-     * @var string
+     * @var array
      */
-    protected $contentType = 'text/csv';
+    protected $contentType = ['text/csv'];
 
     /**
      * The field delimiter (one character only).
