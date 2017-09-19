@@ -3,7 +3,7 @@
 namespace Middlewares;
 
 use DomainException;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\StreamInterface;
 
 class JsonPayload extends Payload implements MiddlewareInterface

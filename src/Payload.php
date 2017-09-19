@@ -3,7 +3,7 @@
 namespace Middlewares;
 
 use Exception;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -70,12 +70,12 @@ abstract class Payload
     /**
      * Process a server request and return a response.
      *
-     * @param ServerRequestInterface $request
-     * @param DelegateInterface      $delegate
+     * @param ServerRequestInterface  $request
+     * @param RequestHandlerInterface $handler
      *
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler)
     {
         if ($this->checkRequest($request)) {
             try {
@@ -85,7 +85,7 @@ abstract class Payload
             }
         }
 
-        return $delegate->process($request);
+        return $handler->handle($request);
     }
 
     /**
@@ -100,7 +100,7 @@ abstract class Payload
     /**
      * Check whether the request payload need to be processed
      *
-     * @param  ServerRequestInterface $request
+     * @param ServerRequestInterface $request
      *
      * @return bool
      */

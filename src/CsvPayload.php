@@ -2,7 +2,7 @@
 
 namespace Middlewares;
 
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use SplTempFileObject;

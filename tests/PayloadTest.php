@@ -9,7 +9,6 @@ use Middlewares\UrlEncodePayload;
 use Middlewares\Utils\Dispatcher;
 use Middlewares\Utils\Factory;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
 
 class JsonPayloadTest extends TestCase
 {
@@ -126,13 +125,13 @@ class JsonPayloadTest extends TestCase
             function ($request, $next) {
                 $this->assertEquals(['bar' => 'foo'], $request->getParsedBody());
 
-                return $next->process($request->withParsedBody(['other' => 'body']));
+                return $next->handle($request->withParsedBody(['other' => 'body']));
             },
             new JsonPayload(),
             function ($request, $next) {
                 $this->assertEquals(['other' => 'body'], $request->getParsedBody());
 
-                return $next->process($request);
+                return $next->handle($request);
             },
             (new JsonPayload())->override(),
             function ($request, $next) {
