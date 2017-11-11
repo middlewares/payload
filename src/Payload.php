@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Middlewares;
 
@@ -75,7 +76,7 @@ abstract class Payload
      *
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($this->checkRequest($request)) {
             try {
@@ -95,7 +96,7 @@ abstract class Payload
      *
      * @return array
      */
-    abstract protected function parse(StreamInterface $stream);
+    abstract protected function parse(StreamInterface $stream): array;
 
     /**
      * Check whether the request payload need to be processed

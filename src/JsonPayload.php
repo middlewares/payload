@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Middlewares;
 
@@ -78,7 +79,7 @@ class JsonPayload extends Payload implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    protected function parse(StreamInterface $stream)
+    protected function parse(StreamInterface $stream): array
     {
         $json = trim((string) $stream);
 

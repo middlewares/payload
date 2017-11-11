@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Middlewares;
 
@@ -15,7 +16,7 @@ class UrlEncodePayload extends Payload implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    protected function parse(StreamInterface $stream)
+    protected function parse(StreamInterface $stream): array
     {
         parse_str((string) $stream, $data);
 

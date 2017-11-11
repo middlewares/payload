@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Middlewares;
 
@@ -37,12 +38,8 @@ class CsvPayload extends Payload implements MiddlewareInterface
 
     /**
      * Set Csv Control delimiter character
-     *
-     * @param string $delimiter
-     *
-     * @return self
      */
-    public function delimiter($delimiter)
+    public function delimiter(string $delimiter): self
     {
         $this->delimiter = self::filterControl($delimiter, 'delimiter');
 
@@ -51,12 +48,8 @@ class CsvPayload extends Payload implements MiddlewareInterface
 
     /**
      * Set Csv Control enclosure character
-     *
-     * @param string $enclosure
-     *
-     * @return self
      */
-    public function enclosure($enclosure)
+    public function enclosure(string $enclosure): self
     {
         $this->enclosure = self::filterControl($enclosure, 'enclosure');
 
@@ -65,12 +58,8 @@ class CsvPayload extends Payload implements MiddlewareInterface
 
     /**
      * Set Csv Control escape character
-     *
-     * @param string $escape
-     *
-     * @return self
      */
-    public function escape($escape)
+    public function escape(string $escape): self
     {
         $this->escape = self::filterControl($escape, 'escape');
 
@@ -79,15 +68,8 @@ class CsvPayload extends Payload implements MiddlewareInterface
 
     /**
      * Filter Csv control character
-     *
-     * @param string $char Csv control character
-     * @param string $type Csv control character type
-     *
-     * @throws InvalidArgumentException If the Csv control character is not one character only.
-     *
-     * @return string
      */
-    private static function filterControl($char, $type)
+    private static function filterControl(string $char, string $type): string
     {
         if (1 == strlen($char)) {
             return $char;
@@ -99,7 +81,7 @@ class CsvPayload extends Payload implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    protected function parse(StreamInterface $stream)
+    protected function parse(StreamInterface $stream): array
     {
         $csv = new SplTempFileObject();
         $csv->fwrite((string) $stream);
