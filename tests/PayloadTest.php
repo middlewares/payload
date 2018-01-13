@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Middlewares\Tests;
 
@@ -25,11 +26,8 @@ class JsonPayloadTest extends TestCase
 
     /**
      * @dataProvider payloadProvider
-     * @param mixed $header
-     * @param mixed $body
-     * @param mixed $result
      */
-    public function testPayload($header, $body, $result)
+    public function testPayload(string $header, string $body, array $result)
     {
         $request = Factory::createServerRequest([], 'POST')
             ->withHeader('Content-Type', $header);
@@ -76,7 +74,6 @@ class JsonPayloadTest extends TestCase
                 ['PUT'],
                 'POST',
                 '{"bar":"foo"}',
-                null,
             ], [
                 ['GET'],
                 'GET',
@@ -88,12 +85,8 @@ class JsonPayloadTest extends TestCase
 
     /**
      * @dataProvider methodProvider
-     * @param mixed $methods
-     * @param mixed $method
-     * @param mixed $body
-     * @param mixed $result
      */
-    public function testMethods($methods, $method, $body, $result)
+    public function testMethods(array $methods, string $method, string $body, array $result = null)
     {
         $request = Factory::createServerRequest([], $method)
             ->withHeader('Content-Type', 'application/json');
@@ -191,15 +184,14 @@ class JsonPayloadTest extends TestCase
 
     /**
      * @dataProvider invalidCsvControlProvider
-     * @param mixed $char
      */
-    public function testCsvPayloadSettersThrowsException($char)
+    public function testCsvPayloadSettersThrowsException(string $char)
     {
         $this->expectException(InvalidArgumentException::class);
         (new CsvPayload())->delimiter($char);
     }
 
-    public function invalidCsvControlProvider()
+    public function invalidCsvControlProvider(): array
     {
         return [
             'too long' => ['coucou'],
@@ -207,5 +199,38 @@ class JsonPayloadTest extends TestCase
             'unicode char' => ['💩'],
             'unicode char PHP7 notation' => ["\u{0001F4A9}"],
         ];
+    }
+
+    public function testJsonOptions()
+    {
+        $request = Factory::createServerRequest([], 'POST')
+            ->withHeader('Content-Type', 'application/json');
+
+        $body = <<<'EOT'
+[
+    12345678901234567890123456789012345678901234567890123456789012345678901234567890,
+    {
+        "level1": {
+            "level2": {
+                "level3": "value"
+            }
+        }
+    }
+]
+EOT;
+
+        $request->getBody()->write($body);
+
+        $response = Dispatcher::run(
+            [
+                (new JsonPayload())
+                    ->associative(false)
+                    ->depth(1)
+                    ->options(JSON_BIGINT_AS_STRING),
+            ],
+            $request
+        );
+
+        $this->assertEquals(400, $response->getStatusCode());
     }
 }
