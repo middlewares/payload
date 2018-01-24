@@ -3,8 +3,8 @@ declare(strict_types = 1);
 
 namespace Middlewares;
 
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Server\MiddlewareInterface;
 
 class UrlEncodePayload extends Payload implements MiddlewareInterface
 {

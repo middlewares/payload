@@ -3,9 +3,9 @@ declare(strict_types = 1);
 
 namespace Middlewares;
 
-use Psr\Http\Server\MiddlewareInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use SplTempFileObject;
 
 class CsvPayload extends Payload implements MiddlewareInterface
