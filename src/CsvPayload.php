@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Middlewares;
 
-use Interop\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use SplTempFileObject;
