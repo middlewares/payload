@@ -13,6 +13,8 @@ Parses the body of the request if it's not parsed and the method is POST, PUT or
 * [UrlEncodePayload](#urlencodepayload)
 * [CsvPayload](#csvpayload)
 
+Failure to parse the body will result in a `Middlewares\Utils\HttpErrorException` being thrown. See [middlewares/utils](https://github.com/middlewares/utils#httperrorexception) for additional details.
+
 ## Requirements
 
 * PHP >= 7.0
@@ -57,9 +59,9 @@ To override the previous parsed body if exists (`false` by default)
 
 ```php
 $dispatcher = new Dispatcher([
-	(new Middlewares\JsonPayload())
-		->associative(false)
-		->depth(64)
+    (new Middlewares\JsonPayload())
+        ->associative(false)
+        ->depth(64)
 ]);
 
 $response = $dispatcher->dispatch(new ServerRequest());
@@ -91,42 +93,7 @@ $response = $dispatcher->dispatch(new ServerRequest());
 
 ## CsvPayload
 
-Parses the csv payload of the request. Contains the following options to configure the [SplTempFileObject](http://php.net/SplTempFileObject) object:
-
-#### `delimiter($delimiter)`
-
-To configure the Csv delimiter control character (one character only). If the submitted character is invalid an `InvalidArgumentException` exception is thrown.
-
-#### `enclosure($enclosure)`
-
-To configure the Csv enclosure control character (one character only). If the submitted character is invalid an `InvalidArgumentException` exception is thrown.
-
-#### `escape($escape)`
-
-To configure the Csv escape control character (one character only). If the submitted character is invalid an `InvalidArgumentException` exception is thrown.
-
-#### `methods(array $methods)`
-
-To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
-
-#### `contentType(array $contentType)`
-
-To configure all Content-Type headers used in the request. By default is `text/csv`
-
-#### `override($override = true)`
-
-To override the previous parsed body if exists (`false` by default)
-
-```php
-$dispatcher = new Dispatcher([
-    (new Middlewares\CsvPayload())
-    	->delimiter(";")
-    	->enclosure("'")
-    	->escape("\\")
-]);
-
-$response = $dispatcher->dispatch(new ServerRequest());
-```
+CSV payloads are supported by the [middlewares/csv-payload](https://packagist.org/packages/middlewares/csv-payload) package.
 
 ---
 
