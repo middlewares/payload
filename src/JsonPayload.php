@@ -1,9 +1,9 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Middlewares;
 
-use DomainException;
+use Exception;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Server\MiddlewareInterface;
 
@@ -30,14 +30,11 @@ class JsonPayload extends Payload implements MiddlewareInterface
     private $options = 0;
 
     /**
-     * Configure the returned object to be converted into a sequential array of all CSV lines
-     * or a SplTempFileObject
+     * Configure the returned object to be converted into an array instead of an object.
      *
-     * @param bool $associative
-     *
-     * @return self
+     * @see http://php.net/manual/en/function.json-decode.php
      */
-    public function associative($associative = true)
+    public function associative(bool $associative = true): self
     {
         $this->associative = $associative;
 
@@ -48,14 +45,10 @@ class JsonPayload extends Payload implements MiddlewareInterface
      * Configure the recursion depth.
      *
      * @see http://php.net/manual/en/function.json-decode.php
-     *
-     * @param int $depth
-     *
-     * @return self
      */
-    public function depth($depth)
+    public function depth(int $depth): self
     {
-        $this->depth = (int) $depth;
+        $this->depth = $depth;
 
         return $this;
     }
@@ -64,14 +57,10 @@ class JsonPayload extends Payload implements MiddlewareInterface
      * Configure the decode options.
      *
      * @see http://php.net/manual/en/function.json-decode.php
-     *
-     * @param int $options
-     *
-     * @return self
      */
-    public function options($options)
+    public function options(int $options): self
     {
-        $this->options = (int) $options;
+        $this->options = $options;
 
         return $this;
     }
@@ -88,9 +77,12 @@ class JsonPayload extends Payload implements MiddlewareInterface
         }
 
         $data = json_decode($json, $this->associative, $this->depth, $this->options);
+        $code = json_last_error();
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new DomainException(json_last_error_msg());
+        if ($code !== JSON_ERROR_NONE) {
+            // This can be modified for PHP 7.3 when it is stable:
+            // https://ayesh.me/Upgrade-PHP-7.3#json-exceptions
+            throw new Exception(sprintf('JSON: %s', json_last_error_msg()), $code);
         }
 
         return $data ?: [];

@@ -1,9 +1,10 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Middlewares;
 
 use Exception;
+use Middlewares\Utils\HttpErrorException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -28,12 +29,8 @@ abstract class Payload
 
     /**
      * Configure the Content-Type.
-     *
-     * @param array $contentType
-     *
-     * @return self
      */
-    public function contentType(array $contentType)
+    public function contentType(array $contentType): self
     {
         $this->contentType = $contentType;
 
@@ -44,10 +41,8 @@ abstract class Payload
      * Configure the methods allowed.
      *
      * @param string[] $methods
-     *
-     * @return self
      */
-    public function methods(array $methods)
+    public function methods(array $methods): self
     {
         $this->methods = $methods;
 
@@ -56,25 +51,16 @@ abstract class Payload
 
     /**
      * Configure if the parsed body overrides the previous value.
-     *
-     * @param bool $override
-     *
-     * @return self
      */
-    public function override($override = true)
+    public function override(bool $override = true): self
     {
-        $this->override = (bool) $override;
+        $this->override = $override;
 
         return $this;
     }
 
     /**
      * Process a server request and return a response.
-     *
-     * @param ServerRequestInterface  $request
-     * @param RequestHandlerInterface $handler
-     *
-     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -82,7 +68,7 @@ abstract class Payload
             try {
                 $request = $request->withParsedBody($this->parse($request->getBody()));
             } catch (Exception $exception) {
-                return Utils\Factory::createResponse(400);
+                throw HttpErrorException::create(400, [], $exception);
             }
         }
 
@@ -91,21 +77,13 @@ abstract class Payload
 
     /**
      * Parse the body.
-     *
-     * @param StreamInterface $stream
-     *
-     * @return array
      */
     abstract protected function parse(StreamInterface $stream): array;
 
     /**
      * Check whether the request payload need to be processed
-     *
-     * @param ServerRequestInterface $request
-     *
-     * @return bool
      */
-    private function checkRequest(ServerRequestInterface $request)
+    private function checkRequest(ServerRequestInterface $request): bool
     {
         if ($request->getParsedBody() && !$this->override) {
             return false;
