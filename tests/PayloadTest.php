@@ -4,14 +4,14 @@ declare(strict_types = 1);
 namespace Middlewares\Tests;
 
 use InvalidArgumentException;
-use Middlewares\CsvPayload;
 use Middlewares\JsonPayload;
 use Middlewares\UrlEncodePayload;
 use Middlewares\Utils\Dispatcher;
 use Middlewares\Utils\Factory;
+use Middlewares\Utils\HttpErrorException;
 use PHPUnit\Framework\TestCase;
 
-class JsonPayloadTest extends TestCase
+class PayloadTest extends TestCase
 {
     public function payloadProvider()
     {
@@ -20,7 +20,6 @@ class JsonPayloadTest extends TestCase
             ['application/json', '', []],
             ['application/x-www-form-urlencoded', 'bar=foo', ['bar' => 'foo']],
             ['application/x-www-form-urlencoded', '', []],
-            ['text/csv', "one,two\nthree,four", [['one', 'two'], ['three', 'four']]],
         ];
     }
 
@@ -36,7 +35,6 @@ class JsonPayloadTest extends TestCase
 
         $response = Dispatcher::run([
             new JsonPayload(),
-            new CsvPayload(),
             new UrlEncodePayload(),
             function ($request) use ($result) {
                 $this->assertEquals($result, $request->getParsedBody());
@@ -50,6 +48,9 @@ class JsonPayloadTest extends TestCase
 
     public function testError()
     {
+        $this->expectException(HttpErrorException::class);
+        $this->expectExceptionCode(400);
+
         $request = Factory::createServerRequest([], 'POST')
             ->withHeader('Content-Type', 'application/json');
 
@@ -58,8 +59,6 @@ class JsonPayloadTest extends TestCase
         $response = Dispatcher::run([
             new JsonPayload(),
         ], $request);
-
-        $this->assertEquals(400, $response->getStatusCode());
     }
 
     public function methodProvider()
@@ -158,51 +157,11 @@ class JsonPayloadTest extends TestCase
         $this->assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testCsvPayloadOptions()
-    {
-        $csv_payload = (new CsvPayload())
-            ->delimiter(';')
-            ->enclosure('"')
-            ->escape('\\');
-
-        $request = Factory::createServerRequest([], 'POST')
-            ->withHeader('Content-Type', 'text/csv');
-
-        $request->getBody()->write("one;two\nthree;four");
-
-        $response = Dispatcher::run([
-            $csv_payload,
-            function ($request) {
-                $this->assertEquals([['one', 'two'], ['three', 'four']], $request->getParsedBody());
-                echo 'Ok';
-            },
-        ], $request);
-
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('Ok', (string) $response->getBody());
-    }
-
-    /**
-     * @dataProvider invalidCsvControlProvider
-     */
-    public function testCsvPayloadSettersThrowsException(string $char)
-    {
-        $this->expectException(InvalidArgumentException::class);
-        (new CsvPayload())->delimiter($char);
-    }
-
-    public function invalidCsvControlProvider(): array
-    {
-        return [
-            'too long' => ['coucou'],
-            'too short' => [''],
-            'unicode char' => ['💩'],
-            'unicode char PHP7 notation' => ["\u{0001F4A9}"],
-        ];
-    }
-
     public function testJsonOptions()
     {
+        $this->expectException(HttpErrorException::class);
+        $this->expectExceptionCode(400);
+
         $request = Factory::createServerRequest([], 'POST')
             ->withHeader('Content-Type', 'application/json');
 
@@ -230,7 +189,5 @@ EOT;
             ],
             $request
         );
-
-        $this->assertEquals(400, $response->getStatusCode());
     }
 }
