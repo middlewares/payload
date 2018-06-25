@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.0.0] - ???
+## [2.0.0] - 2018-06-25
 
 ### Changed
 
@@ -50,15 +50,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.4.0] - 2017-02-05
 
-* Added
-  * New option `contentType()` to configure the `Content-Type` request header
-  * Improve CsvPayload
-    - New option `delimiter()` to configure the CSV delimiter character
-    - New option `enclosure()` to configure the CSV enclosure character
-    - New option `escape()` to configure the CSV escape character
+### Added
 
-* Fixed
-  * CsvPayload: `StreamInterface` fixed left undetached
+- New option `contentType()` to configure the `Content-Type` request header
+- Improve CsvPayload
+  - New option `delimiter()` to configure the CSV delimiter character
+  - New option `enclosure()` to configure the CSV enclosure character
+  - New option `escape()` to configure the CSV escape character
+- Fixed
+  - CsvPayload: `StreamInterface` fixed left undetached
 
 ## [0.3.0] - 2016-12-26
 
@@ -83,6 +83,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 First version
 
+
+[2.0.0]: https://github.com/middlewares/payload/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/middlewares/payload/compare/v0.6.0...v1.0.0
 [0.6.0]: https://github.com/middlewares/payload/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/middlewares/payload/compare/v0.4.0...v0.5.0
