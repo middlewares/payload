@@ -46,7 +46,7 @@ class PayloadTest extends TestCase
         $this->assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testError()
+    public function testJsonError()
     {
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
@@ -58,6 +58,21 @@ class PayloadTest extends TestCase
 
         $response = Dispatcher::run([
             new JsonPayload(),
+        ], $request);
+    }
+
+    public function testUrlEncodeError()
+    {
+        $this->expectException(HttpErrorException::class);
+        $this->expectExceptionCode(400);
+
+        $request = Factory::createServerRequest([], 'POST')
+            ->withHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        $request->getBody()->write('&=');
+
+        $response = Dispatcher::run([
+            new UrlEncodePayload(),
         ], $request);
     }
 
