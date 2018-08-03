@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace Middlewares\Tests;
 
-use InvalidArgumentException;
 use Middlewares\JsonPayload;
 use Middlewares\UrlEncodePayload;
 use Middlewares\Utils\Dispatcher;
@@ -28,7 +27,7 @@ class PayloadTest extends TestCase
      */
     public function testPayload(string $header, string $body, array $result)
     {
-        $request = Factory::createServerRequest([], 'POST')
+        $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', $header);
 
         $request->getBody()->write($body);
@@ -51,7 +50,7 @@ class PayloadTest extends TestCase
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
 
-        $request = Factory::createServerRequest([], 'POST')
+        $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'application/json');
 
         $request->getBody()->write('{invalid:"json"}');
@@ -66,7 +65,7 @@ class PayloadTest extends TestCase
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
 
-        $request = Factory::createServerRequest([], 'POST')
+        $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'application/x-www-form-urlencoded');
 
         $request->getBody()->write('&=');
@@ -102,7 +101,7 @@ class PayloadTest extends TestCase
      */
     public function testMethods(array $methods, string $method, string $body, array $result = null)
     {
-        $request = Factory::createServerRequest([], $method)
+        $request = Factory::createServerRequest($method, '/')
             ->withHeader('Content-Type', 'application/json');
 
         $request->getBody()->write($body);
@@ -122,7 +121,7 @@ class PayloadTest extends TestCase
 
     public function testOverride()
     {
-        $request = Factory::createServerRequest([], 'POST')
+        $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'application/json');
 
         $request->getBody()->write('{"bar":"foo"}');
@@ -154,7 +153,7 @@ class PayloadTest extends TestCase
 
     public function testContentType()
     {
-        $request = Factory::createServerRequest([], 'POST')
+        $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'bar/foo; charset=utf8');
 
         $request->getBody()->write('{"bar":"foo"}');
@@ -177,7 +176,7 @@ class PayloadTest extends TestCase
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
 
-        $request = Factory::createServerRequest([], 'POST')
+        $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'application/json');
 
         $body = <<<'EOT'
