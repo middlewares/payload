@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.1.0] - UNRELEASED
+
+### Added
+
+- PSR-17 support
+
 ## [2.0.0] - 2018-06-25
 
 ### Changed
@@ -84,6 +90,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 First version
 
 
+[2.1.0]: https://github.com/middlewares/payload/compare/v2.0.0...HEAD
 [2.0.0]: https://github.com/middlewares/payload/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/middlewares/payload/compare/v0.6.0...v1.0.0
 [0.6.0]: https://github.com/middlewares/payload/compare/v0.5.0...v0.6.0
