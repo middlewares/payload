@@ -1,6 +1,5 @@
 vendor
-coverage
-build
 composer.lock
-phpunit.xml
 .php_cs.cache
+coverage
+.phpunit.result.cache
