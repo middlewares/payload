@@ -31,31 +31,7 @@ composer require middlewares/payload
 
 ## JsonPayload
 
-Parses the json payload of the request. Contains the following options to configure the [json_decode](http://php.net/manual/en/function.json-decode.php) function:
-
-#### `associative(bool $associative)`
-
-Enabled by default, convert the objects into associative arrays.
-
-#### `depth(int $depth)`
-
-To configure the recursion depth.
-
-#### `options(int $options)`
-
-To pass the bitmask of json_decode options.
-
-#### `methods(array $methods)`
-
-To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
-
-#### `contentType(array $contentType)`
-
-To configure all Content-Type headers allowed in the request. By default is `application/json`
-
-#### `override($override = true)`
-
-To override the previous parsed body if exists (`false` by default)
+Parses the json payload of the request.
 
 ```php
 $dispatcher = new Dispatcher([
@@ -67,21 +43,59 @@ $dispatcher = new Dispatcher([
 $response = $dispatcher->dispatch(new ServerRequest());
 ```
 
-## UrlEncodePayload
+Contains the following options to configure the [json_decode](http://php.net/manual/en/function.json-decode.php) function:
 
-Parses the url-encoded payload of the request. There's no options.
+### `associative`
 
-#### `methods(array $methods)`
+Enabled by default, convert the objects into associative arrays.
+
+Type | Required | Description
+-----|----------|------------
+`bool` | No | `true` (or none) to enable, `false` to disable
+
+### `depth`
+
+To configure the recursion depth.
+
+Type | Required | Description
+-----|----------|------------
+`int` | Yes | The new value
+
+### `options`
+
+To pass the bitmask of json_decode options: `JSON_BIGINT_AS_STRING` (enabled by default), `JSON_OBJECT_AS_ARRAY`, `JSON_THROW_ON_ERROR`.
+
+Type | Required | Description
+-----|----------|------------
+`int` | Yes | The new options
+
+### `methods`
 
 To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
 
-#### `contentType(array $contentType)`
+Type | Required | Description
+-----|----------|------------
+`string[]` | Yes | Array with the new allowed methods (in uppercase)
 
-To configure all Content-Type headers used in the request. By default is `application/x-www-form-urlencoded`
+### `contentType`
 
-#### `override($override = true)`
+To configure all Content-Type headers allowed in the request. By default is `application/json`
+
+Type | Required | Description
+-----|----------|------------
+`string[]` | Yes | Array with the new `Content-Type` headers allowed
+
+### `override`
 
 To override the previous parsed body if exists (`false` by default)
+
+Type | Required | Description
+-----|----------|------------
+`bool` | No | `true` (or none) to override the, `false` to don't
+
+## UrlEncodePayload
+
+Parses the url-encoded payload of the request.
 
 ```php
 $dispatcher = new Dispatcher([
@@ -90,6 +104,31 @@ $dispatcher = new Dispatcher([
 
 $response = $dispatcher->dispatch(new ServerRequest());
 ```
+
+### `methods`
+
+To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
+
+Type | Required | Description
+-----|----------|------------
+`string[]` | Yes | Array with the new allowed methods (in uppercase)
+
+### `contentType`
+
+To configure all Content-Type headers allowed in the request. By default is `application/x-www-form-urlencoded`
+
+Type | Required | Description
+-----|----------|------------
+`string[]` | Yes | Array with the new `Content-Type` headers allowed
+
+### `override`
+
+To override the previous parsed body if exists (`false` by default)
+
+Type | Required | Description
+-----|----------|------------
+`bool` | No | `true` (or none) to override the, `false` to don't
+
 
 ## CsvPayload
 
