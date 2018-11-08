@@ -68,12 +68,12 @@ class JsonPayload extends Payload implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    protected function parse(StreamInterface $stream): array
+    protected function parse(StreamInterface $stream)
     {
         $json = trim((string) $stream);
 
         if ($json === '') {
-            return [];
+            return $this->associative ? [] : null;
         }
 
         $data = json_decode($json, $this->associative, $this->depth, $this->options);
@@ -85,6 +85,10 @@ class JsonPayload extends Payload implements MiddlewareInterface
             throw new Exception(sprintf('JSON: %s', json_last_error_msg()), $code);
         }
 
-        return $data ?: [];
+        if ($this->associative) {
+            return $data ?: [];
+        }
+
+        return $data;
     }
 }

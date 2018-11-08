@@ -204,4 +204,40 @@ EOT;
             $request
         );
     }
+
+    public function disabledAssociativeProvider()
+    {
+        return [
+            ['{}', (object) []],
+            ['{"foo": "bar"}', (object) ['foo' => 'bar']],
+            ['["foo", "bar"]', ['foo', 'bar']],
+            ['', null],
+        ];
+    }
+
+    /**
+     * @dataProvider disabledAssociativeProvider
+     * @param mixed $expected
+     */
+    public function testAssociativeDisabled(string $body, $expected)
+    {
+        $request = Factory::createServerRequest('POST', '/')
+            ->withHeader('Content-Type', 'application/json');
+
+        $request->getBody()->write($body);
+
+        $response = Dispatcher::run(
+            [
+                (new JsonPayload())->associative(false),
+                function ($request) use ($expected) {
+                    $this->assertEquals($expected, $request->getParsedBody());
+
+                    echo 'Ok';
+                },
+            ],
+            $request
+        );
+
+        $this->assertEquals('Ok', (string) $response->getBody());
+    }
 }

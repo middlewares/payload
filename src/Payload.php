@@ -78,7 +78,7 @@ abstract class Payload
     /**
      * Parse the body.
      */
-    abstract protected function parse(StreamInterface $stream): array;
+    abstract protected function parse(StreamInterface $stream);
 
     /**
      * Check whether the request payload need to be processed

@@ -17,7 +17,7 @@ class UrlEncodePayload extends Payload implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    protected function parse(StreamInterface $stream): array
+    protected function parse(StreamInterface $stream)
     {
         $string = trim((string) $stream);
         parse_str($string, $data);
