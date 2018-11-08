@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Use `phpstan` as a dev dependency to detect bugs
+- Fixed disabled associative config, that could return `scalar|array|object` instead only array #8
 
 ## [2.1.0] - 2018-08-04
 
