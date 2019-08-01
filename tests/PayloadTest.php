@@ -10,6 +10,7 @@ use Middlewares\Utils\Dispatcher;
 use Middlewares\Utils\Factory;
 use Middlewares\Utils\HttpErrorException;
 use PHPUnit\Framework\TestCase;
+use SimpleXMLElement;
 
 class PayloadTest extends TestCase
 {
@@ -20,15 +21,14 @@ class PayloadTest extends TestCase
             ['application/json', '', []],
             ['application/x-www-form-urlencoded', 'bar=foo', ['bar' => 'foo']],
             ['application/x-www-form-urlencoded', '', []],
-            ['application/xml', '<root><bar>foo</bar></root>', ['bar' => 'foo']],
-            ['application/xml', '', []]
+            ['application/xml', '<root><bar>foo</bar></root>', new SimpleXMLElement('<root><bar>foo</bar></root>')]
         ];
     }
 
     /**
      * @dataProvider payloadProvider
      */
-    public function testPayload(string $header, string $body, array $result)
+    public function testPayload(string $header, string $body, $result)
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', $header);
@@ -248,42 +248,6 @@ EOT;
         $response = Dispatcher::run(
             [
                 (new JsonPayload())->associative(false),
-                function ($request) use ($expected) {
-                    $this->assertEquals($expected, $request->getParsedBody());
-
-                    echo 'Ok';
-                },
-            ],
-            $request
-        );
-
-        $this->assertEquals('Ok', (string) $response->getBody());
-    }
-
-    public function xmlDisabledAssociativeProvider()
-    {
-        return [
-            ['<root></root>', (object) []],
-            ['<root><foo>bar</foo></root>', (object) ['foo' => 'bar']],
-            ['<root><value>foo</value><value>bar</value></root>', (object)['value' => ['foo', 'bar']]],
-            ['', null],
-        ];
-    }
-
-    /**
-     * @dataProvider xmlDisabledAssociativeProvider
-     * @param mixed $expected
-     */
-    public function testXmlAssociativeDisabled(string $body, $expected)
-    {
-        $request = Factory::createServerRequest('POST', '/')
-            ->withHeader('Content-Type', 'application/xml');
-
-        $request->getBody()->write($body);
-
-        $response = Dispatcher::run(
-            [
-                (new XmlPayload())->associative(false),
                 function ($request) use ($expected) {
                     $this->assertEquals($expected, $request->getParsedBody());
 
