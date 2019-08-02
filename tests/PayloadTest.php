@@ -5,10 +5,12 @@ namespace Middlewares\Tests;
 
 use Middlewares\JsonPayload;
 use Middlewares\UrlEncodePayload;
+use Middlewares\XmlPayload;
 use Middlewares\Utils\Dispatcher;
 use Middlewares\Utils\Factory;
 use Middlewares\Utils\HttpErrorException;
 use PHPUnit\Framework\TestCase;
+use SimpleXMLElement;
 
 class PayloadTest extends TestCase
 {
@@ -19,13 +21,15 @@ class PayloadTest extends TestCase
             ['application/json', '', []],
             ['application/x-www-form-urlencoded', 'bar=foo', ['bar' => 'foo']],
             ['application/x-www-form-urlencoded', '', []],
+            ['application/xml', '<root><bar>foo</bar></root>', new SimpleXMLElement('<root><bar>foo</bar></root>')],
+            ['application/xml', '', null],
         ];
     }
 
     /**
      * @dataProvider payloadProvider
      */
-    public function testPayload(string $header, string $body, array $result)
+    public function testPayload(string $header, string $body, $result)
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', $header);
@@ -35,6 +39,7 @@ class PayloadTest extends TestCase
         $response = Dispatcher::run([
             new JsonPayload(),
             new UrlEncodePayload(),
+            new XmlPayload(),
             function ($request) use ($result) {
                 $this->assertEquals($result, $request->getParsedBody());
                 echo 'Ok';
@@ -72,6 +77,21 @@ class PayloadTest extends TestCase
 
         $response = Dispatcher::run([
             new UrlEncodePayload(),
+        ], $request);
+    }
+
+    public function testXmlError()
+    {
+        $this->expectException(HttpErrorException::class);
+        $this->expectExceptionCode(400);
+
+        $request = Factory::createServerRequest('POST', '/')
+            ->withHeader('Content-Type', 'application/xml');
+
+        $request->getBody()->write('<invalid></xml>');
+
+        $response = Dispatcher::run([
+            new XmlPayload(),
         ], $request);
     }
 
@@ -205,7 +225,7 @@ EOT;
         );
     }
 
-    public function disabledAssociativeProvider()
+    public function jsonDisabledAssociativeProvider()
     {
         return [
             ['{}', (object) []],
@@ -216,10 +236,10 @@ EOT;
     }
 
     /**
-     * @dataProvider disabledAssociativeProvider
+     * @dataProvider jsonDisabledAssociativeProvider
      * @param mixed $expected
      */
-    public function testAssociativeDisabled(string $body, $expected)
+    public function testJsonAssociativeDisabled(string $body, $expected)
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'application/json');
