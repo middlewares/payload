@@ -138,7 +138,7 @@ CSV payloads are supported by the [middlewares/csv-payload](https://packagist.or
 
 ## XmlPayload
 
-Parses the XML payload of the request. It returns an instance of [SimpleXMLElement](https://www.php.net/manual/en/class.simplexmlelement.php).
+Parses the XML payload of the request. Parsed body will return an instance of [SimpleXMLElement](https://www.php.net/manual/en/class.simplexmlelement.php).
 
 ---
 
