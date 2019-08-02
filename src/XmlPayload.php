@@ -21,7 +21,7 @@ class XmlPayload extends Payload implements MiddlewareInterface
     {
         $string = trim((string)$stream);
 
-        if (empty($string)) {
+        if ($string === '') {
             return null;
         }
 
