@@ -12,6 +12,7 @@ Parses the body of the request if it's not parsed and the method is POST, PUT or
 * [JsonPayload](#jsonpayload)
 * [UrlEncodePayload](#urlencodepayload)
 * [CsvPayload](#csvpayload)
+* [XmlPayload](#xmlpayload)
 
 Failure to parse the body will result in a `Middlewares\Utils\HttpErrorException` being thrown. See [middlewares/utils](https://github.com/middlewares/utils#httperrorexception) for additional details.
 
@@ -31,7 +32,7 @@ composer require middlewares/payload
 
 ## JsonPayload
 
-Parses the json payload of the request.
+Parses the JSON payload of the request.
 
 ```php
 $dispatcher = new Dispatcher([
@@ -133,6 +134,11 @@ Type | Required | Description
 ## CsvPayload
 
 CSV payloads are supported by the [middlewares/csv-payload](https://packagist.org/packages/middlewares/csv-payload) package.
+
+
+## XmlPayload
+
+Parses the XML payload of the request. It returns an instance of [SimpleXMLElement](https://www.php.net/manual/en/class.simplexmlelement.php).
 
 ---
 
