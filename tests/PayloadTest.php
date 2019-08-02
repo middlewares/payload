@@ -21,7 +21,8 @@ class PayloadTest extends TestCase
             ['application/json', '', []],
             ['application/x-www-form-urlencoded', 'bar=foo', ['bar' => 'foo']],
             ['application/x-www-form-urlencoded', '', []],
-            ['application/xml', '<root><bar>foo</bar></root>', new SimpleXMLElement('<root><bar>foo</bar></root>')]
+            ['application/xml', '<root><bar>foo</bar></root>', new SimpleXMLElement('<root><bar>foo</bar></root>')],
+            ['application/xml', '', null],
         ];
     }
 
