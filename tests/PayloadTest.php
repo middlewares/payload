@@ -5,10 +5,10 @@ namespace Middlewares\Tests;
 
 use Middlewares\JsonPayload;
 use Middlewares\UrlEncodePayload;
-use Middlewares\XmlPayload;
 use Middlewares\Utils\Dispatcher;
 use Middlewares\Utils\Factory;
 use Middlewares\Utils\HttpErrorException;
+use Middlewares\XmlPayload;
 use PHPUnit\Framework\TestCase;
 use SimpleXMLElement;
 
@@ -28,6 +28,7 @@ class PayloadTest extends TestCase
 
     /**
      * @dataProvider payloadProvider
+     * @param mixed $result
      */
     public function testPayload(string $header, string $body, $result)
     {

@@ -76,17 +76,27 @@ class JsonPayload extends Payload implements MiddlewareInterface
             return $this->associative ? [] : null;
         }
 
+        $data = defined('JSON_THROW_ON_ERROR') ? $this->parseWithException($json) : $this->parseWithoutException($json);
+
+        if ($this->associative) {
+            return $data ?: [];
+        }
+
+        return $data;
+    }
+
+    protected function parseWithException(string $json)
+    {
+        return json_decode($json, $this->associative, $this->depth, $this->options | JSON_THROW_ON_ERROR);
+    }
+
+    protected function parseWithoutException(string $json)
+    {
         $data = json_decode($json, $this->associative, $this->depth, $this->options);
         $code = json_last_error();
 
         if ($code !== JSON_ERROR_NONE) {
-            // This can be modified for PHP 7.3 when it is stable:
-            // https://ayesh.me/Upgrade-PHP-7.3#json-exceptions
             throw new Exception(sprintf('JSON: %s', json_last_error_msg()), $code);
-        }
-
-        if ($this->associative) {
-            return $data ?: [];
         }
 
         return $data;

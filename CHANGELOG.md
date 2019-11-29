@@ -5,9 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.2.0] - Unreleased
+## [3.0.0] - 2019-11-29
 ### Added
 - New `XmlPayload` middleware [#9]
+- Throw `JsonException` on error (Php ^7.3)
+
+### Removed
+- Support for PHP 7.0 and 7.1
 
 ## [2.1.1] - 2018-11-08
 ### Fixed

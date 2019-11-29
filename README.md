@@ -5,7 +5,6 @@
 [![Build Status][ico-travis]][link-travis]
 [![Quality Score][ico-scrutinizer]][link-scrutinizer]
 [![Total Downloads][ico-downloads]][link-downloads]
-[![SensioLabs Insight][ico-sensiolabs]][link-sensiolabs]
 
 Parses the body of the request if it's not parsed and the method is POST, PUT or DELETE. It contains the following components to support different formats:
 
@@ -18,7 +17,7 @@ Failure to parse the body will result in a `Middlewares\Utils\HttpErrorException
 
 ## Requirements
 
-* PHP >= 7.0
+* PHP >= 7.2
 * A [PSR-7 http library](https://github.com/middlewares/awesome-psr15-middlewares#psr-7-implementations)
 * A [PSR-15 middleware dispatcher](https://github.com/middlewares/awesome-psr15-middlewares#dispatcher)
 
@@ -35,7 +34,7 @@ composer require middlewares/payload
 Parses the JSON payload of the request.
 
 ```php
-$dispatcher = new Dispatcher([
+Dispatcher::run([
     (new Middlewares\JsonPayload())
         ->associative(false)
         ->depth(64)
@@ -46,89 +45,67 @@ $response = $dispatcher->dispatch(new ServerRequest());
 
 Contains the following options to configure the [json_decode](http://php.net/manual/en/function.json-decode.php) function:
 
-### `associative`
+### associative
 
 Enabled by default, convert the objects into associative arrays.
 
-Type | Required | Description
------|----------|------------
-`bool` | No | `true` (or none) to enable, `false` to disable
+```php
+//Disable associative arrays
+$payload = (new Middlewares\JsonPayload())->associative(false);
+```
 
-### `depth`
+### depth
 
-To configure the recursion depth.
+To configure the recursion depth option of json_decode. By default is `512`.
 
-Type | Required | Description
------|----------|------------
-`int` | Yes | The new value
-
-### `options`
+### options
 
 To pass the bitmask of json_decode options: `JSON_BIGINT_AS_STRING` (enabled by default), `JSON_OBJECT_AS_ARRAY`, `JSON_THROW_ON_ERROR`.
 
-Type | Required | Description
------|----------|------------
-`int` | Yes | The new options
-
-### `methods`
+### methods
 
 To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
 
-Type | Required | Description
------|----------|------------
-`string[]` | Yes | Array with the new allowed methods (in uppercase)
+```php
+//Parse json only with POST and PUT requests
+$payload = (new Middlewares\JsonPayload())->methods(['POST', 'PUT']);
+```
 
-### `contentType`
+### contentType
 
-To configure all Content-Type headers allowed in the request. By default is `application/json`
+To configure all `Content-Type` headers allowed in the request. By default is `application/json`
 
-Type | Required | Description
------|----------|------------
-`string[]` | Yes | Array with the new `Content-Type` headers allowed
+```php
+//Parse json only in request with these two Content-Type values
+$payload = (new Middlewares\JsonPayload())->contentType(['application/json', 'text/json']);
+```
 
-### `override`
+### override
 
 To override the previous parsed body if exists (`false` by default)
 
-Type | Required | Description
------|----------|------------
-`bool` | No | `true` (or none) to override the, `false` to don't
 
 ## UrlEncodePayload
 
 Parses the url-encoded payload of the request.
 
 ```php
-$dispatcher = new Dispatcher([
+Dispatcher::run([
     new Middlewares\UrlEncodePayload()
 ]);
-
-$response = $dispatcher->dispatch(new ServerRequest());
 ```
 
-### `methods`
+### methods
 
 To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
 
-Type | Required | Description
------|----------|------------
-`string[]` | Yes | Array with the new allowed methods (in uppercase)
-
-### `contentType`
+### contentType
 
 To configure all Content-Type headers allowed in the request. By default is `application/x-www-form-urlencoded`
 
-Type | Required | Description
------|----------|------------
-`string[]` | Yes | Array with the new `Content-Type` headers allowed
-
-### `override`
+### override
 
 To override the previous parsed body if exists (`false` by default)
-
-Type | Required | Description
------|----------|------------
-`bool` | No | `true` (or none) to override the, `false` to don't
 
 
 ## CsvPayload
@@ -139,6 +116,18 @@ CSV payloads are supported by the [middlewares/csv-payload](https://packagist.or
 ## XmlPayload
 
 Parses the XML payload of the request. Parsed body will return an instance of [SimpleXMLElement](https://www.php.net/manual/en/class.simplexmlelement.php).
+
+### methods
+
+To configure the allowed methods. By default only the requests with the method `POST, PUT, PATCH, DELETE, COPY, LOCK, UNLOCK` are handled.
+
+### contentType
+
+To configure all Content-Type headers allowed in the request. By default is `text/xml`, `application/xml` and `application/x-xml`.
+
+### override
+
+To override the previous parsed body if exists (`false` by default)
 
 ---
 
@@ -151,10 +140,8 @@ The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
 [ico-travis]: https://img.shields.io/travis/middlewares/payload/master.svg?style=flat-square
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/g/middlewares/payload.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/middlewares/payload.svg?style=flat-square
-[ico-sensiolabs]: https://img.shields.io/sensiolabs/i/7200be66-ac83-455c-bc85-c40eb569b94c.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/middlewares/payload
 [link-travis]: https://travis-ci.org/middlewares/payload
 [link-scrutinizer]: https://scrutinizer-ci.com/g/middlewares/payload
 [link-downloads]: https://packagist.org/packages/middlewares/payload
-[link-sensiolabs]: https://insight.sensiolabs.com/projects/7200be66-ac83-455c-bc85-c40eb569b94c
