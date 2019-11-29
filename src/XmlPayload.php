@@ -19,7 +19,7 @@ class XmlPayload extends Payload implements MiddlewareInterface
      */
     protected function parse(StreamInterface $stream)
     {
-        $string = trim((string)$stream);
+        $string = trim((string) $stream);
 
         if ($string === '') {
             return null;
