@@ -14,6 +14,7 @@ use SimpleXMLElement;
 
 class PayloadTest extends TestCase
 {
+    /** @return array<array> */
     public function payloadProvider()
     {
         return [
@@ -30,7 +31,7 @@ class PayloadTest extends TestCase
      * @dataProvider payloadProvider
      * @param mixed $result
      */
-    public function testPayload(string $header, string $body, $result)
+    public function testPayload(string $header, string $body, $result): void
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', $header);
@@ -42,16 +43,16 @@ class PayloadTest extends TestCase
             new UrlEncodePayload(),
             new XmlPayload(),
             function ($request) use ($result) {
-                $this->assertEquals($result, $request->getParsedBody());
+                self::assertEquals($result, $request->getParsedBody());
                 echo 'Ok';
             },
         ], $request);
 
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('Ok', (string) $response->getBody());
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testJsonError()
+    public function testJsonError(): void
     {
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
@@ -66,7 +67,7 @@ class PayloadTest extends TestCase
         ], $request);
     }
 
-    public function testUrlEncodeError()
+    public function testUrlEncodeError(): void
     {
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
@@ -81,7 +82,7 @@ class PayloadTest extends TestCase
         ], $request);
     }
 
-    public function testXmlError()
+    public function testXmlError(): void
     {
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
@@ -96,7 +97,7 @@ class PayloadTest extends TestCase
         ], $request);
     }
 
-    public function methodProvider()
+    public function methodProvider(): array
     {
         return [
             [
@@ -120,7 +121,7 @@ class PayloadTest extends TestCase
     /**
      * @dataProvider methodProvider
      */
-    public function testMethods(array $methods, string $method, string $body, array $result = null)
+    public function testMethods(array $methods, string $method, string $body, array $result = null): void
     {
         $request = Factory::createServerRequest($method, '/')
             ->withHeader('Content-Type', 'application/json');
@@ -130,17 +131,17 @@ class PayloadTest extends TestCase
         $response = Dispatcher::run([
             (new JsonPayload())->methods($methods),
             function ($request) use ($result) {
-                $this->assertEquals($result, $request->getParsedBody());
+                self::assertEquals($result, $request->getParsedBody());
 
                 echo 'Ok';
             },
         ], $request);
 
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('Ok', (string) $response->getBody());
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testOverride()
+    public function testOverride(): void
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'application/json');
@@ -150,29 +151,29 @@ class PayloadTest extends TestCase
         $response = Dispatcher::run([
             new JsonPayload(),
             function ($request, $next) {
-                $this->assertEquals(['bar' => 'foo'], $request->getParsedBody());
+                self::assertEquals(['bar' => 'foo'], $request->getParsedBody());
 
                 return $next->handle($request->withParsedBody(['other' => 'body']));
             },
             new JsonPayload(),
             function ($request, $next) {
-                $this->assertEquals(['other' => 'body'], $request->getParsedBody());
+                self::assertEquals(['other' => 'body'], $request->getParsedBody());
 
                 return $next->handle($request);
             },
             (new JsonPayload())->override(),
             function ($request, $next) {
-                $this->assertEquals(['bar' => 'foo'], $request->getParsedBody());
+                self::assertEquals(['bar' => 'foo'], $request->getParsedBody());
 
                 echo 'Ok';
             },
         ], $request);
 
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('Ok', (string) $response->getBody());
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testContentType()
+    public function testContentType(): void
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'bar/foo; charset=utf8');
@@ -182,17 +183,17 @@ class PayloadTest extends TestCase
         $response = Dispatcher::run([
             (new JsonPayload())->contentType(['application/json', 'bar/foo']),
             function ($request, $next) {
-                $this->assertEquals(['bar' => 'foo'], $request->getParsedBody());
+                self::assertEquals(['bar' => 'foo'], $request->getParsedBody());
 
                 echo 'Ok';
             },
         ], $request);
 
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('Ok', (string) $response->getBody());
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testJsonOptions()
+    public function testJsonOptions(): void
     {
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
@@ -226,7 +227,7 @@ EOT;
         );
     }
 
-    public function jsonDisabledAssociativeProvider()
+    public function jsonDisabledAssociativeProvider(): array
     {
         return [
             ['{}', (object) []],
@@ -240,7 +241,7 @@ EOT;
      * @dataProvider jsonDisabledAssociativeProvider
      * @param mixed $expected
      */
-    public function testJsonAssociativeDisabled(string $body, $expected)
+    public function testJsonAssociativeDisabled(string $body, $expected): void
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'application/json');
@@ -251,7 +252,7 @@ EOT;
             [
                 (new JsonPayload())->associative(false),
                 function ($request) use ($expected) {
-                    $this->assertEquals($expected, $request->getParsedBody());
+                    self::assertEquals($expected, $request->getParsedBody());
 
                     echo 'Ok';
                 },
@@ -259,6 +260,6 @@ EOT;
             $request
         );
 
-        $this->assertEquals('Ok', (string) $response->getBody());
+        self::assertEquals('Ok', (string) $response->getBody());
     }
 }
