@@ -1,0 +1,8 @@
+parameters:
+    level: max
+    checkMissingIterableValueType: false
+    paths:
+        - src
+        - tests
+    ignoreErrors:
+        - '#.*parse.* has no return typehint specified.#'
