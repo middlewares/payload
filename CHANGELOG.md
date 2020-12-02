@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.1] - 2020-12-02
+### Added
+- Support for PHP 8
+
 ## [3.0.0] - 2019-11-29
 ### Added
 - New `XmlPayload` middleware [#9]
@@ -84,7 +88,8 @@ First version
 [#8]: https://github.com/middlewares/payload/issues/8
 [#9]: https://github.com/middlewares/payload/issues/9
 
-[2.2.0]: https://github.com/middlewares/payload/compare/v2.1.1...HEAD
+[3.0.1]: https://github.com/middlewares/payload/compare/v3.0.0...v3.0.1
+[3.0.0]: https://github.com/middlewares/payload/compare/v2.1.1...v3.0.0
 [2.1.1]: https://github.com/middlewares/payload/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/middlewares/payload/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/middlewares/payload/compare/v1.0.0...v2.0.0
