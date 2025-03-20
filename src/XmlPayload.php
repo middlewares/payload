@@ -17,7 +17,7 @@ class XmlPayload extends Payload implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    protected function parse(StreamInterface $stream)
+    protected function parse(StreamInterface $stream): ?SimpleXMLElement
     {
         $string = trim((string) $stream);
 

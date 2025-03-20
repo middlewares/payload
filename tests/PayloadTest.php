@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Middlewares\Tests;
 
+use stdClass;
 use Middlewares\JsonPayload;
 use Middlewares\UrlEncodePayload;
 use Middlewares\Utils\Dispatcher;
@@ -14,7 +15,7 @@ use SimpleXMLElement;
 
 class PayloadTest extends TestCase
 {
-    public function payloadProvider()
+    public function payloadProvider(): array
     {
         return [
             ['application/json', '{"bar":"foo"}', ['bar' => 'foo']],
@@ -30,7 +31,7 @@ class PayloadTest extends TestCase
      * @dataProvider payloadProvider
      * @param mixed $result
      */
-    public function testPayload(string $header, string $body, $result)
+    public function testPayload(string $header, string $body, SimpleXMLElement|array|null $result): void
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', $header);
@@ -51,7 +52,7 @@ class PayloadTest extends TestCase
         $this->assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testJsonError()
+    public function testJsonError(): void
     {
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
@@ -66,7 +67,7 @@ class PayloadTest extends TestCase
         ], $request);
     }
 
-    public function testUrlEncodeError()
+    public function testUrlEncodeError(): void
     {
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
@@ -81,7 +82,7 @@ class PayloadTest extends TestCase
         ], $request);
     }
 
-    public function testXmlError()
+    public function testXmlError(): void
     {
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
@@ -96,7 +97,7 @@ class PayloadTest extends TestCase
         ], $request);
     }
 
-    public function methodProvider()
+    public function methodProvider(): array
     {
         return [
             [
@@ -120,7 +121,7 @@ class PayloadTest extends TestCase
     /**
      * @dataProvider methodProvider
      */
-    public function testMethods(array $methods, string $method, string $body, array $result = null)
+    public function testMethods(array $methods, string $method, string $body, ?array $result = null): void
     {
         $request = Factory::createServerRequest($method, '/')
             ->withHeader('Content-Type', 'application/json');
@@ -140,7 +141,7 @@ class PayloadTest extends TestCase
         $this->assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testOverride()
+    public function testOverride(): void
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'application/json');
@@ -172,7 +173,7 @@ class PayloadTest extends TestCase
         $this->assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testContentType()
+    public function testContentType(): void
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'bar/foo; charset=utf8');
@@ -192,7 +193,7 @@ class PayloadTest extends TestCase
         $this->assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testJsonOptions()
+    public function testJsonOptions(): void
     {
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
@@ -226,7 +227,7 @@ EOT;
         );
     }
 
-    public function jsonDisabledAssociativeProvider()
+    public function jsonDisabledAssociativeProvider(): array
     {
         return [
             ['{}', (object) []],
@@ -240,7 +241,7 @@ EOT;
      * @dataProvider jsonDisabledAssociativeProvider
      * @param mixed $expected
      */
-    public function testJsonAssociativeDisabled(string $body, $expected)
+    public function testJsonAssociativeDisabled(string $body, stdClass|array|null $expected): void
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'application/json');
