@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace Middlewares\Tests;
 
-use stdClass;
 use Middlewares\JsonPayload;
 use Middlewares\UrlEncodePayload;
 use Middlewares\Utils\Dispatcher;
@@ -15,6 +14,9 @@ use SimpleXMLElement;
 
 class PayloadTest extends TestCase
 {
+    /**
+     * @return array<int, array<int, array<string, string>|SimpleXMLElement|string|null>>
+     */
     public function payloadProvider(): array
     {
         return [
@@ -29,9 +31,9 @@ class PayloadTest extends TestCase
 
     /**
      * @dataProvider payloadProvider
-     * @param mixed $result
+     * @param SimpleXMLElement|array<string, string>|null $result
      */
-    public function testPayload(string $header, string $body, SimpleXMLElement|array|null $result): void
+    public function testPayload(string $header, string $body, $result): void
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', $header);
@@ -97,6 +99,9 @@ class PayloadTest extends TestCase
         ], $request);
     }
 
+    /**
+     * @return array<array<string[]|string>>
+     */
     public function methodProvider(): array
     {
         return [
@@ -120,6 +125,8 @@ class PayloadTest extends TestCase
 
     /**
      * @dataProvider methodProvider
+     * @param string[]                  $methods
+     * @param array<string,string>|null $result
      */
     public function testMethods(array $methods, string $method, string $body, ?array $result = null): void
     {
@@ -227,6 +234,9 @@ EOT;
         );
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function jsonDisabledAssociativeProvider(): array
     {
         return [
@@ -239,9 +249,9 @@ EOT;
 
     /**
      * @dataProvider jsonDisabledAssociativeProvider
-     * @param mixed $expected
+     * @param object|array<string,string>|null $expected
      */
-    public function testJsonAssociativeDisabled(string $body, stdClass|array|null $expected): void
+    public function testJsonAssociativeDisabled(string $body, $expected): void
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'application/json');

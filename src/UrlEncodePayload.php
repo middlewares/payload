@@ -10,14 +10,16 @@ use Psr\Http\Server\MiddlewareInterface;
 class UrlEncodePayload extends Payload implements MiddlewareInterface
 {
     /**
-     * @var array
+     * @var string[]
      */
     protected $contentType = ['application/x-www-form-urlencoded'];
 
     /**
      * {@inheritdoc}
+     *
+     * @return array<mixed>
      */
-    protected function parse(StreamInterface $stream)
+    protected function parse(StreamInterface $stream): array
     {
         $string = trim((string) $stream);
         parse_str($string, $data);

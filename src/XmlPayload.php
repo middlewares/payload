@@ -10,7 +10,7 @@ use SimpleXMLElement;
 class XmlPayload extends Payload implements MiddlewareInterface
 {
     /**
-     * @var array
+     * @var string[]
      */
     protected $contentType = ['text/xml', 'application/xml', 'application/x-xml'];
 

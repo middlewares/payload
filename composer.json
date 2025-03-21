@@ -28,10 +28,12 @@
         "squizlabs/php_codesniffer": "^3",
         "oscarotero/php-cs-fixer-config": "^2",
         "phpstan/phpstan": "^1 || ^2",
-        "laminas/laminas-diactoros": "^2 || ^3"
+        "laminas/laminas-diactoros": "^2 || ^3",
+        "ext-simplexml": "*"
     },
     "suggest": {
-        "middlewares/csv-payload": "Adds support for parsing CSV body of request"
+        "middlewares/csv-payload": "Adds support for parsing CSV body of request",
+        "ext-simplexml": "Enable to use the XML payload parser."
     },
     "autoload": {
         "psr-4": {
