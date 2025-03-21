@@ -10,7 +10,7 @@ use Psr\Http\Server\MiddlewareInterface;
 class JsonPayload extends Payload implements MiddlewareInterface
 {
     /**
-     * @var array
+     * @var string[]
      */
     protected $contentType = ['application/json'];
 
@@ -67,6 +67,8 @@ class JsonPayload extends Payload implements MiddlewareInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return array<mixed>|object|null
      */
     protected function parse(StreamInterface $stream)
     {
@@ -79,19 +81,28 @@ class JsonPayload extends Payload implements MiddlewareInterface
         $data = defined('JSON_THROW_ON_ERROR') ? $this->parseWithException($json) : $this->parseWithoutException($json);
 
         if ($this->associative) {
-            return $data ?: [];
+            return $data ?? [];
         }
 
         return $data;
     }
 
+    /**
+
+     * @return mixed
+     */
     protected function parseWithException(string $json)
     {
+        /* @phpstan-ignore-next-line */
         return json_decode($json, $this->associative, $this->depth, $this->options | JSON_THROW_ON_ERROR);
     }
 
+    /**
+     * @return mixed
+     */
     protected function parseWithoutException(string $json)
     {
+        /** @phpstan-ignore-next-line */
         $data = json_decode($json, $this->associative, $this->depth, $this->options);
         $code = json_last_error();
 

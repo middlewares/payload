@@ -14,7 +14,10 @@ use SimpleXMLElement;
 
 class PayloadTest extends TestCase
 {
-    public function payloadProvider()
+    /**
+     * @return array<int, array<int, array<string, string>|SimpleXMLElement|string|null>>
+     */
+    public function payloadProvider(): array
     {
         return [
             ['application/json', '{"bar":"foo"}', ['bar' => 'foo']],
@@ -28,9 +31,9 @@ class PayloadTest extends TestCase
 
     /**
      * @dataProvider payloadProvider
-     * @param mixed $result
+     * @param SimpleXMLElement|array<string, string>|null $result
      */
-    public function testPayload(string $header, string $body, $result)
+    public function testPayload(string $header, string $body, $result): void
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', $header);
@@ -51,7 +54,7 @@ class PayloadTest extends TestCase
         $this->assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testJsonError()
+    public function testJsonError(): void
     {
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
@@ -66,7 +69,7 @@ class PayloadTest extends TestCase
         ], $request);
     }
 
-    public function testUrlEncodeError()
+    public function testUrlEncodeError(): void
     {
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
@@ -81,7 +84,7 @@ class PayloadTest extends TestCase
         ], $request);
     }
 
-    public function testXmlError()
+    public function testXmlError(): void
     {
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
@@ -96,7 +99,10 @@ class PayloadTest extends TestCase
         ], $request);
     }
 
-    public function methodProvider()
+    /**
+     * @return array<array<string[]|string>>
+     */
+    public function methodProvider(): array
     {
         return [
             [
@@ -119,8 +125,10 @@ class PayloadTest extends TestCase
 
     /**
      * @dataProvider methodProvider
+     * @param string[]                  $methods
+     * @param array<string,string>|null $result
      */
-    public function testMethods(array $methods, string $method, string $body, array $result = null)
+    public function testMethods(array $methods, string $method, string $body, ?array $result = null): void
     {
         $request = Factory::createServerRequest($method, '/')
             ->withHeader('Content-Type', 'application/json');
@@ -140,7 +148,7 @@ class PayloadTest extends TestCase
         $this->assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testOverride()
+    public function testOverride(): void
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'application/json');
@@ -172,7 +180,7 @@ class PayloadTest extends TestCase
         $this->assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testContentType()
+    public function testContentType(): void
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'bar/foo; charset=utf8');
@@ -192,7 +200,7 @@ class PayloadTest extends TestCase
         $this->assertEquals('Ok', (string) $response->getBody());
     }
 
-    public function testJsonOptions()
+    public function testJsonOptions(): void
     {
         $this->expectException(HttpErrorException::class);
         $this->expectExceptionCode(400);
@@ -226,7 +234,10 @@ EOT;
         );
     }
 
-    public function jsonDisabledAssociativeProvider()
+    /**
+     * @return array<mixed>
+     */
+    public function jsonDisabledAssociativeProvider(): array
     {
         return [
             ['{}', (object) []],
@@ -238,9 +249,9 @@ EOT;
 
     /**
      * @dataProvider jsonDisabledAssociativeProvider
-     * @param mixed $expected
+     * @param object|array<string,string>|null $expected
      */
-    public function testJsonAssociativeDisabled(string $body, $expected)
+    public function testJsonAssociativeDisabled(string $body, $expected): void
     {
         $request = Factory::createServerRequest('POST', '/')
             ->withHeader('Content-Type', 'application/json');

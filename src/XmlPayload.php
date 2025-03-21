@@ -10,14 +10,14 @@ use SimpleXMLElement;
 class XmlPayload extends Payload implements MiddlewareInterface
 {
     /**
-     * @var array
+     * @var string[]
      */
     protected $contentType = ['text/xml', 'application/xml', 'application/x-xml'];
 
     /**
      * {@inheritdoc}
      */
-    protected function parse(StreamInterface $stream)
+    protected function parse(StreamInterface $stream): ?SimpleXMLElement
     {
         $string = trim((string) $stream);
 

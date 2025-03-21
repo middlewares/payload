@@ -13,7 +13,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 abstract class Payload
 {
     /**
-     * @var array
+     * @var string[]
      */
     protected $contentType;
 
@@ -29,6 +29,8 @@ abstract class Payload
 
     /**
      * Configure the Content-Type.
+     *
+     * @param string[] $contentType
      */
     public function contentType(array $contentType): self
     {
@@ -77,6 +79,8 @@ abstract class Payload
 
     /**
      * Parse the body.
+     *
+     * @return mixed
      */
     abstract protected function parse(StreamInterface $stream);
 
