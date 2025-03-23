@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.1.0] - 2025-03-21
+### Added
+- Support for PHP 8.4
+
 ## [3.0.2] - 2024-01-12
 ### Fixed
 - Updated dependencies.
@@ -91,6 +95,7 @@ First version
 [#8]: https://github.com/middlewares/payload/issues/8
 [#9]: https://github.com/middlewares/payload/issues/9
 
+[3.1.0]: https://github.com/middlewares/payload/compare/v3.0.2...v3.1.0
 [3.0.2]: https://github.com/middlewares/payload/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/middlewares/payload/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/middlewares/payload/compare/v2.1.1...v3.0.0
